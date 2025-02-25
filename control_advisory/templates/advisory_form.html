@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Control Advisory{% endblock %}
+
+{% block content %}
+    <h2>Get Personalized Control Measures</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Get Recommendations</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Manage Pest & Weed Database{% endblock %}
+{% block content %}
+    <h1 class="mb-5 text-center" style="color: #2c3e50; font-weight: bold;">Manage Pest & Weed Database</h1>
+    <div class="container">
+        <div class="row g-4">
+            <!-- Card 1: View Pest List -->
+            <div class="col-md-6 col-lg-6">
+                <div class="card h-100 shadow-sm border-0" style="background: linear-gradient(135deg, #e3f2fd, #bbdefb);">
+                    <div class="card-body text-center p-4">
+                        <h5 class="card-title" style="color: #1976d2;">View Pest List</h5>
+                        <p class="card-text" style="color: #616161;">Browse the list of all pests.</p>
+                        <a href="{% url 'pest_list' %}" class="btn btn-info mt-3" style="border-radius: 20px; padding: 10px 20px;">View Pests</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Card 2: View Weed List -->
+            <div class="col-md-6 col-lg-6">
+                <div class="card h-100 shadow-sm border-0" style="background: linear-gradient(135deg, #e1f5fe, #b3e5fc);">
+                    <div class="card-body text-center p-4">
+                        <h5 class="card-title" style="color: #0288d1;">View Weed List</h5>
+                        <p class="card-text" style="color: #616161;">Browse the list of all weeds.</p>
+                        <a href="{% url 'weed_list' %}" class="btn btn-info mt-3" style="border-radius: 20px; padding: 10px 20px;">View Weeds</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-5">
+            <a href="{% url 'expert_dashboard' %}" class="btn btn-secondary" style="border-radius: 20px; padding: 10px 30px; background-color: #455a64; border: none;">Back to Dashboard</a>
+        </div>
+    </div>
+{% endblock %}

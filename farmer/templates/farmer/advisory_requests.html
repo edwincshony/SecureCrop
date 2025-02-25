@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Advisory Requests{% endblock %}
+{% block content %}
+<div class="container-fluid py-5">
+    <!-- Page Title -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 style="color: #2a7221;" class="fw-bold">Advisory Requests</h1>
+        <a href="#" class="btn rounded-pill" style="background-color: #2a7221; color: white;" data-bs-toggle="modal" data-bs-target="#submitRequestModal">
+            <i class="fas fa-plus me-2"></i> Submit New Request
+        </a>
+    </div>
+    <!-- Submit New Request Modal -->
+    <div class="modal fade" id="submitRequestModal" tabindex="-1" aria-labelledby="submitRequestModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #2a7221; color: white;">
+                    <h5 class="modal-title" id="submitRequestModalLabel"><i class="fas fa-plus me-2"></i> Submit New Request</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ advisory_form|crispy }}
+                        <button type="submit" name="advisory_submit" class="btn w-100 mt-3 rounded-pill" style="background-color: #2a7221; color: white;">
+                            <i class="fas fa-paper-plane me-2"></i> Request Recommendation
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Recent Requests -->
+<div class="card shadow-lg border-0 rounded-3">
+    <div class="card-header rounded-top" style="background-color: #2a7221; color: white;">
+        <i class="fas fa-list me-2"></i> Recent Requests
+    </div>
+    <div class="card-body p-4">
+        {% if advisory_requests %}
+            <ul class="list-group list-group-flush">
+                {% for request in advisory_requests %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3 border-bottom">
+                        <div>
+                            <strong class="text-dark">{{ request.crop_type }} ({{ request.issue_type }})</strong><br>
+                            <small class="text-muted fst-italic">{{ request.status }} - {{ request.created_at|date:"M d, Y" }}</small>
+                        </div>
+                        <div>
+                            {% if request.status == 'pending' %}
+                                <!-- Edit Button -->
+                                <a href="{% url 'edit_advisory_request' request.id %}" class="btn btn-sm btn-outline-success me-2">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <!-- Delete Button -->
+                                <a href="{% url 'delete_advisory_request' request.id %}" class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+                            {% endif %}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-center text-muted fst-italic">No recent requests.</p>
+        {% endif %}
+        <a href="{% url 'advisory_responses' %}" class="btn w-100 mt-3 rounded-pill" style="background-color: #2a7221; color: white;">
+            <i class="fas fa-eye me-2"></i> View Responses
+        </a>
+    </div>
+</div>
+{% endblock %}

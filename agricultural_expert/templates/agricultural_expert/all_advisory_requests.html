@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}All Advisory Requests{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">All Pending Advisory Requests</h1>
+
+    <div class="accordion" id="requestsAccordion">
+        {% for advisory in advisory_requests %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ forloop.counter }}">
+                    {{ advisory.crop_type }} ({{ advisory.issue_type }})
+                </button>
+            </h2>
+            <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#requestsAccordion">
+                <div class="accordion-body">
+                    <p><strong>Submitted by:</strong> {{ advisory.user.username }}</p>
+                    <p><strong>Date:</strong> {{ advisory.created_at|date:"F d, Y" }}</p>
+                    <a href="{% url 'respond_advisory' advisory.pk %}" class="btn btn-success btn-sm">Respond</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No pending advisory requests available.</p>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'expert_dashboard' %}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+{% endblock %}

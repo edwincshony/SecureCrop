@@ -1,0 +1,18 @@
+<!-- templates/discussions/reply_to_post.html -->
+{% extends 'layout.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Reply to Post{% endblock %}
+
+{% block content %}
+<h1>Reply to Post</h1>
+<p>Post Content: {{ post.content }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-primary">Submit Reply</button>
+</form>
+<br>
+<a href="{% url 'thread_detail' post.thread.id %}" class="btn btn-secondary">Back to Thread</a>
+{% endblock %}

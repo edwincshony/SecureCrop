@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Pest Infestations Report{% endblock %}
+
+{% block content %}
+    <h2>Pest Infestations Report</h2>
+    {% if sightings %}
+        <ul>
+            {% for sighting in sightings %}
+                <li>
+                    <strong>{{ sighting.pest.name }}</strong> sighted at {{ sighting.location }} on {{ sighting.date }}
+                    <p>{{ sighting.notes }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No sightings reported.</p>
+    {% endif %}
+{% endblock %}

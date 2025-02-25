@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}{{ pest.name }}{% endblock %}
+{% block content %}
+    <h2>{{ pest.name }}</h2>
+    <p><strong>Scientific Name:</strong> {{ pest.scientific_name }}</p>
+    <p><strong>Description:</strong> {{ pest.description }}</p>
+    <p><strong>Symptoms:</strong> {{ pest.symptoms }}</p>
+    <p><strong>Control Measures:</strong> {{ pest.control_measures }}</p>
+    {% if pest.image %}
+        <img src="{{ pest.image.url }}" alt="{{ pest.name }}" style="max-width: 300px;">
+    {% endif %}
+{% endblock %}

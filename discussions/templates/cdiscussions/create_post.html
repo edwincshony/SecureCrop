@@ -1,0 +1,17 @@
+<!-- templates/discussions/create_post.html -->
+{% extends 'layout.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Create Post{% endblock %}
+
+{% block content %}
+<h1>Create a New Post in "{{ thread.title }}"</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-primary">Submit Post</button>
+</form>
+<br>
+<a href="{% url 'thread_detail' thread.id %}" class="btn btn-secondary">Back to Thread</a>
+{% endblock %}

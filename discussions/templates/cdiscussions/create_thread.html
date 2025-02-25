@@ -1,0 +1,17 @@
+<!-- templates/discussions/create_thread.html -->
+{% extends 'layout.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Create Thread{% endblock %}
+
+{% block content %}
+<h1>Create a New Thread in "{{ category.name }}"</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-primary">Create Thread</button>
+</form>
+<br>
+<a href="{% url 'thread_list' category.id %}" class="btn btn-secondary">Back to Threads</a>
+{% endblock %}

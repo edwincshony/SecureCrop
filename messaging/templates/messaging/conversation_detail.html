@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+    <h2 class="text-center my-4">Conversation</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <ul class="list-unstyled">
+                
+                {% for message in messages %}
+                    <li class="message-item {% if message.sender == user %}message-right{% else %}message-left{% endif %}">
+                        <div class="message-bubble">
+                            <strong>{{ message.sender.username }}:</strong> 
+                            <span class="text-muted">{{ message.text }}</span><br>
+                            <small class="float-end text-muted">{{ message.timestamp }}</small>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="card" style="margin-bottom: 100px;">
+        <div class="card-body">
+            <form method="post" action="{% url 'messaging:send_message' conversation.id %}" class="d-flex flex-column">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="d-flex justify-content-between mt-3">
+                    <button type="submit" class="btn btn-primary">Send</button>
+                    <a href="{% url 'messaging:conversation_list' %}" class="btn btn-secondary">Back to Inbox</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* General message styling */
+    .message-item {
+        display: flex;
+        margin-bottom: 10px;
+        justify-content: flex-start; /* Default to left for botanist */
+    }
+
+    /* When the user sends a message, align it to the right */
+    .message-right {
+        justify-content: flex-end;
+    }
+
+  
+</style>
+{% endblock %}

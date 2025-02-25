@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Expert Dashboard{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Welcome, {{ request.user.username }} (Agricultural Expert)!</h1>
+
+    <!-- Dashboard Cards in Grid Layout -->
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <!-- Card 2: Advisory Requests -->
+        <div class="col">
+            <div class="card dashboard-card h-100">
+                <div class="card-header">Advisory Requests</div>
+                <div class="card-body">
+                    <p>Respond to farmers' advisory requests.</p>
+                    <a href="{% url 'all_advisory_requests' %}" class="btn btn-success w-100">View Requests</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Pest Sightings -->
+        <div class="col">
+            <div class="card dashboard-card h-100">
+                <div class="card-header">Pest Sightings</div>
+                <div class="card-body">
+                    <p>Monitor recent pest sightings reported by farmers.</p>
+                    <a href="{% url 'pest_infestations' %}" class="btn btn-info w-100">View Sightings</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Treatment Outcomes -->
+        <div class="col">
+            <div class="card dashboard-card h-100">
+                <div class="card-header">Treatment Outcomes</div>
+                <div class="card-body">
+                    <p>Review treatment outcomes submitted by farmers.</p>
+                    <a href="{% url 'treatment_outcomes' %}" class="btn btn-warning w-100">View Outcomes</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 5: Pest/Weed Database -->
+        <div class="col">
+            <div class="card dashboard-card h-100">
+                <div class="card-header">Manage Pest & Weed Database</div>
+                <div class="card-body">
+                    <p>Manage pest and weed records.</p>
+                    <a href="{% url 'manage_database' %}" class="btn btn-secondary w-100">Go to Database</a>
+                </div>
+            </div>
+        </div>
+
+        
+    </div>
+{% endblock %}

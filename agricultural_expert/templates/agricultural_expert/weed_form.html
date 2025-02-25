@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block title %}{% if object %}Edit Weed{% else %}Add Weed{% endif %}{% endblock %}
+
+{% block content %}
+    <h2>{% if object %}Edit Weed{% else %}Add New Weed{% endif %}</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">Save</button>
+        <a href="{% url 'weed_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+{% endblock %}

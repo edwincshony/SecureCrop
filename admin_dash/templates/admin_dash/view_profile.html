@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}View Profile - {{ user.username }}{% endblock %}
+
+{% block content %}
+    <h2>{{ user.username }}'s Profile</h2>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Role:</strong> {{ user.role|default:"N/A" }}</p>
+    <p><strong>Status:</strong> {{ user.userapproval.status|default:"N/A" }}</p>
+    {% if profile %}
+        {% if user.role == 'farmer' %}
+            <p><strong>Location:</strong> {{ profile.location }}</p>
+            <p><strong>Crop Types:</strong> {{ profile.crop_types }}</p>
+        {% elif user.role == 'agricultural_expert' %}
+            <p><strong>Expertise:</strong> {{ profile.expertise }}</p>
+            <p><strong>Experience (Years):</strong> {{ profile.experience_years }}</p>
+        {% endif %}
+    {% endif %}
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+{% endblock %}

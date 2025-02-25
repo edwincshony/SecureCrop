@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Pest List{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Pest Database</h2>
+        <a href="{% url 'pest_add' %}" class="btn btn-success" style="border-radius: 20px; padding: 10px 20px;">Add New Pest</a>
+    </div>
+
+    <!-- Search Form -->
+    <form method="get" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search pests...">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+
+    <!-- Pest List as Cards -->
+    <div class="row">
+        {% for pest in pests %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ pest.image.url }}" class="card-img-top" alt="{{ pest.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ pest.name }}</h5>
+                        <p class="card-text">{{ pest.description|truncatewords:10 }}</p>
+                        <a href="{% url 'pest_detail' pest.pk %}" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-warning" role="alert">
+                    No pests found.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

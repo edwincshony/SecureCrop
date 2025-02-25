@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Treatment Outcomes Report{% endblock %}
+
+{% block content %}
+    <h2>Treatment Outcomes Report</h2>
+    {% if outcomes %}
+        <ul>
+            {% for outcome in outcomes %}
+                <li>
+                    <strong>{{ outcome.pest.name }}</strong> - Treatment: {{ outcome.treatment_method }} ({{ outcome.effectiveness }}) on {{ outcome.date_applied }}
+                    <p>{{ outcome.notes }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No treatment outcomes reported.</p>
+    {% endif %}
+{% endblock %}

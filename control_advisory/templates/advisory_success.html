@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block title %}Advisory Request Submitted{% endblock %}
+
+{% block content %}
+    <h2>Request Submitted</h2>
+    <p>Your advisory request for {{ advisory_request.crop_type }} ({{ advisory_request.issue_type }}) has been submitted successfully. An agricultural expert will review it soon.</p>
+    <a href="{% url 'dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+{% endblock %}

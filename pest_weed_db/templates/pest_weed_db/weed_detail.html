@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ weed.name }} - Details{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <!-- weed Image -->
+            <img src="{{ weed.image.url }}" class="img-fluid rounded" alt="{{ weed.name }}">
+        </div>
+        <div class="col-md-6">
+            <!-- weed Details -->
+            <h2>{{ weed.name }}</h2>
+            <p><strong>Description:</strong> {{ weed.description }}</p>
+            <p><strong>Symptoms:</strong> {{ weed.symptoms }}</p>
+            <p><strong>Scientific Name:</strong> {{ weed.scientific_name }}</p>
+            <p><strong>Control Measures:</strong> {{ weed.control_measures }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

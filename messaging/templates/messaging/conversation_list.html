@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+    <h2 class="text-center my-4">Inbox</h2>
+
+    {% if conversations %}
+        <ul class="list-group">
+            {% for conversation in conversations %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{% url 'messaging:conversation_detail' conversation.id %}" class="text-decoration-none text-dark">
+                        {{ conversation.user.username }} ↔ {{ conversation.botanist.username }}
+                    </a>
+                    <span class="badge bg-secondary">{{ conversation.messages.count }} messages</span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-center">No conversations yet. Start a conversation.</p>
+        <div class="list-group">
+            {% for botanist in botanists %}
+                <a href="{% url 'messaging:message_botanist' botanist.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    {{ botanist.username }}
+                    <span class="badge bg-primary rounded-pill">Message</span>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
