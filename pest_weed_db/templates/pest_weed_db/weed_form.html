@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}{% if object %}Edit weed{% else %}Add weed{% endif %}{% endblock %}
+{% block content %}
+    <h2>{% if object %}Edit weed{% else %}Add New weed{% endif %}</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">Save</button>
+        {% if object %}
+            <!-- Redirect to weed_detail if editing -->
+            <a href="{% url 'weed_detail' object.pk %}" class="btn btn-secondary">Cancel</a>
+        {% else %}
+            <!-- Redirect to weed_list if adding -->
+            <a href="{% url 'weed_list' %}" class="btn btn-secondary">Cancel</a>
+        {% endif %}
+    </form>
+{% endblock %}

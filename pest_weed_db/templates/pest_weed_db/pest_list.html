@@ -3,39 +3,69 @@
 {% block title %}Pest List{% endblock %}
 {% block content %}
 <div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Pest Database</h2>
-        <a href="{% url 'pest_add' %}" class="btn btn-success" style="border-radius: 20px; padding: 10px 20px;">Add New Pest</a>
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <h2 class="mb-0 fw-bold">Pest Database</h2>
+        <a href="{% url 'pest_add' %}" class="btn btn-success">Add New Pest</a>
     </div>
-
     <!-- Search Form -->
-    <form method="get" class="mb-4">
-        <div class="input-group">
-            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search pests...">
-            <button type="submit" class="btn btn-primary">Search</button>
+    <form id="searchForm" class="mb-5">
+        <div class="input-group w-50 mx-auto">
+            <input type="text" id="searchInput" name="q" value="{{ query }}" class="form-control" placeholder="Search pests..." aria-label="Search pests">
+            <button type="submit" class="btn btn-primary d-none">Search</button> <!-- Hidden submit button -->
         </div>
     </form>
-
     <!-- Pest List as Cards -->
-    <div class="row">
+    <div id="pestList" class="row row-cols-1 row-cols-md-3 g-4">
         {% for pest in pests %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <img src="{{ pest.image.url }}" class="card-img-top" alt="{{ pest.name }}">
+            <div class="col pest-card" data-name="{{ pest.name|lower }}">
+                <div class="card h-100 shadow-sm border-0">
+                    {% if pest.image %}
+                        <img src="{{ pest.image.url }}" class="card-img-top" alt="{{ pest.name }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <span class="text-muted">No image</span>
+                        </div>
+                    {% endif %}
                     <div class="card-body">
-                        <h5 class="card-title">{{ pest.name }}</h5>
-                        <p class="card-text">{{ pest.description|truncatewords:10 }}</p>
-                        <a href="{% url 'pest_detail' pest.pk %}" class="btn btn-primary">View Details</a>
+                        <h5 class="card-title fw-semibold">{{ pest.name }}</h5>
+                        <p class="card-text text-muted">{{ pest.description|truncatewords:10 }}</p>
+                    </div>
+                    <div class="card-footer bg-white border-top-0">
+                        <a href="{% url 'pest_detail' pest.pk %}" class="btn btn-primary w-100">View Details</a>
                     </div>
                 </div>
             </div>
         {% empty %}
             <div class="col-12">
-                <div class="alert alert-warning" role="alert">
+                <div class="alert alert-warning text-center" role="alert">
                     No pests found.
                 </div>
             </div>
         {% endfor %}
     </div>
 </div>
+
+<!-- JavaScript for Real-Time Search -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('searchInput');
+    const pestCards = document.querySelectorAll('.pest-card');
+
+    // Add an event listener to the search input
+    searchInput.addEventListener('input', function () {
+        const query = searchInput.value.trim().toLowerCase();
+
+        // Loop through each pest card and show/hide based on the query
+        pestCards.forEach(card => {
+            const pestName = card.getAttribute('data-name');
+            if (pestName.includes(query)) {
+                card.style.display = ''; // Show the card
+            } else {
+                card.style.display = 'none'; // Hide the card
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

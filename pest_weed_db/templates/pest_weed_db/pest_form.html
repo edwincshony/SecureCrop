@@ -1,14 +1,18 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
-
 {% block title %}{% if object %}Edit Pest{% else %}Add Pest{% endif %}{% endblock %}
-
 {% block content %}
     <h2>{% if object %}Edit Pest{% else %}Add New Pest{% endif %}</h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form|crispy }}
         <button type="submit" class="btn btn-success">Save</button>
-        <a href="{% url 'pest_list' %}" class="btn btn-secondary">Cancel</a>
-        </form>
+        {% if object %}
+            <!-- Redirect to pest_detail if editing -->
+            <a href="{% url 'pest_detail' object.pk %}" class="btn btn-secondary">Cancel</a>
+        {% else %}
+            <!-- Redirect to pest_list if adding -->
+            <a href="{% url 'pest_list' %}" class="btn btn-secondary">Cancel</a>
+        {% endif %}
+    </form>
 {% endblock %}

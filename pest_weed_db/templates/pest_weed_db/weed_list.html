@@ -1,40 +1,71 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}Weed List{% endblock %}
-
+{% block title %}weed List{% endblock %}
 {% block content %}
 <div class="container mt-5">
-    <h2 class="mb-4">Weed Database</h2>
-    
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <h2 class="mb-0 fw-bold">Weed Database</h2>
+        <a href="{% url 'weed_add' %}" class="btn btn-success">Add New weed</a>
+    </div>
     <!-- Search Form -->
-    <form method="get" class="mb-4">
-        <div class="input-group">
-            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search weeds...">
-            <button type="submit" class="btn btn-primary">Search</button>
+    <form id="searchForm" class="mb-5">
+        <div class="input-group w-50 mx-auto">
+            <input type="text" id="searchInput" name="q" value="{{ query }}" class="form-control" placeholder="Search weeds..." aria-label="Search weeds">
+            <button type="submit" class="btn btn-primary d-none">Search</button> <!-- Hidden submit button -->
         </div>
     </form>
-
     <!-- weed List as Cards -->
-    <div class="row">
+    <div id="weedList" class="row row-cols-1 row-cols-md-3 g-4">
         {% for weed in weeds %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <img src="{{ weed.image.url }}" class="card-img-top" alt="{{ weed.name }}">
+            <div class="col weed-card" data-name="{{ weed.name|lower }}">
+                <div class="card h-100 shadow-sm border-0">
+                    {% if weed.image %}
+                        <img src="{{ weed.image.url }}" class="card-img-top" alt="{{ weed.name }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <span class="text-muted">No image</span>
+                        </div>
+                    {% endif %}
                     <div class="card-body">
-                        <h5 class="card-title">{{ weed.name }}</h5>
-                        <p class="card-text">{{ weed.description|truncatewords:10 }}</p>
-                        <a href="{% url 'weed_detail' weed.pk %}" class="btn btn-primary">View Details</a>
+                        <h5 class="card-title fw-semibold">{{ weed.name }}</h5>
+                        <p class="card-text text-muted">{{ weed.description|truncatewords:10 }}</p>
+                    </div>
+                    <div class="card-footer bg-white border-top-0">
+                        <a href="{% url 'weed_detail' weed.pk %}" class="btn btn-primary w-100">View Details</a>
                     </div>
                 </div>
             </div>
         {% empty %}
             <div class="col-12">
-                <div class="alert alert-warning" role="alert">
+                <div class="alert alert-warning text-center" role="alert">
                     No weeds found.
                 </div>
             </div>
         {% endfor %}
     </div>
 </div>
+
+<!-- JavaScript for Real-Time Search -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('searchInput');
+    const weedCards = document.querySelectorAll('.weed-card');
+
+    // Add an event listener to the search input
+    searchInput.addEventListener('input', function () {
+        const query = searchInput.value.trim().toLowerCase();
+
+        // Loop through each weed card and show/hide based on the query
+        weedCards.forEach(card => {
+            const weedName = card.getAttribute('data-name');
+            if (weedName.includes(query)) {
+                card.style.display = ''; // Show the card
+            } else {
+                card.style.display = 'none'; // Hide the card
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

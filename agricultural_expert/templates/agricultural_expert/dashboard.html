@@ -3,54 +3,50 @@
 {% block title %}Expert Dashboard{% endblock %}
 
 {% block content %}
-    <h1 class="mb-4">Welcome, {{ request.user.username }} (Agricultural Expert)!</h1>
+<div class="container mt-5">
+    <h1 class="mb-5 text-center fw-bold">Welcome, {{ request.user.username }} 😊</h1>
 
-    <!-- Dashboard Cards in Grid Layout -->
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        <!-- Card 2: Advisory Requests -->
-        <div class="col">
-            <div class="card dashboard-card h-100">
-                <div class="card-header">Advisory Requests</div>
-                <div class="card-body">
-                    <p>Respond to farmers' advisory requests.</p>
-                    <a href="{% url 'all_advisory_requests' %}" class="btn btn-success w-100">View Requests</a>
+    <!-- Dashboard Cards in 2x2 Grid -->
+    <div class="row g-4">
+        <!-- First Row -->
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm" style="border-radius: 8px;">
+                <div class="card-body p-4 text-center">
+                    <h5 class="card-title mb-3 fw-semibold">Advisory Requests</h5>
+                    <p class="card-text text-muted">Respond to farmers' advisory requests.</p>
+                    <a href="{% url 'all_advisory_requests' %}" class="btn btn-primary mt-3" style="border-radius: 4px;">View Requests</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm" style="border-radius: 8px;">
+                <div class="card-body p-4 text-center">
+                    <h5 class="card-title mb-3 fw-semibold">Pest Sightings</h5>
+                    <p class="card-text text-muted">Monitor recent pest sightings reported by farmers.</p>
+                    <a href="{% url 'pest_infestations' %}" class="btn btn-primary mt-3" style="border-radius: 4px;">View Sightings</a>
                 </div>
             </div>
         </div>
 
-        <!-- Card 3: Pest Sightings -->
-        <div class="col">
-            <div class="card dashboard-card h-100">
-                <div class="card-header">Pest Sightings</div>
-                <div class="card-body">
-                    <p>Monitor recent pest sightings reported by farmers.</p>
-                    <a href="{% url 'pest_infestations' %}" class="btn btn-info w-100">View Sightings</a>
+        <!-- Second Row -->
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm" style="border-radius: 8px;">
+                <div class="card-body p-4 text-center">
+                    <h5 class="card-title mb-3 fw-semibold">Treatment Outcomes</h5>
+                    <p class="card-text text-muted">Review treatment outcomes submitted by farmers.</p>
+                    <a href="{% url 'treatment_outcomes' %}" class="btn btn-primary mt-3" style="border-radius: 4px;">View Outcomes</a>
                 </div>
             </div>
         </div>
-
-        <!-- Card 4: Treatment Outcomes -->
-        <div class="col">
-            <div class="card dashboard-card h-100">
-                <div class="card-header">Treatment Outcomes</div>
-                <div class="card-body">
-                    <p>Review treatment outcomes submitted by farmers.</p>
-                    <a href="{% url 'treatment_outcomes' %}" class="btn btn-warning w-100">View Outcomes</a>
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm" style="border-radius: 8px;">
+                <div class="card-body p-4 text-center">
+                    <h5 class="card-title mb-3 fw-semibold">Pest/Weed Database</h5>
+                    <p class="card-text text-muted">Manage pest and weed records.</p>
+                    <a href="{% url 'manage_database' %}" class="btn btn-primary mt-3" style="border-radius: 4px;">Manage Database</a>
                 </div>
             </div>
         </div>
-
-        <!-- Card 5: Pest/Weed Database -->
-        <div class="col">
-            <div class="card dashboard-card h-100">
-                <div class="card-header">Manage Pest & Weed Database</div>
-                <div class="card-body">
-                    <p>Manage pest and weed records.</p>
-                    <a href="{% url 'manage_database' %}" class="btn btn-secondary w-100">Go to Database</a>
-                </div>
-            </div>
-        </div>
-
-        
     </div>
+</div>
 {% endblock %}

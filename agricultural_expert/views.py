@@ -9,15 +9,20 @@ from django.contrib import messages
 from accounts.models import CustomUser
 from notifications.models import Notification
 from reports.models import PestSighting, TreatmentOutcome
+from django.core.exceptions import PermissionDenied
 from pest_weed_db.models import Pest, Weed
 from .forms import PestForm, WeedForm
 
 # Role check mixin for experts
-class ExpertRequiredMixin:
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_expert:
-            return self.handle_no_permission()
-        return super().dispatch(request, *args, **kwargs)
+class ExpertRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        # Check if user is authenticated and has the 'agricultural_expert' role
+        return self.request.user.is_authenticated and getattr(self.request.user, 'role', None) == 'agricultural_expert'
+
+    def handle_no_permission(self):
+        if not self.request.user.is_authenticated:
+            return redirect('login')  # Redirect to login if not authenticated
+        raise PermissionDenied  # Raise 403 if authenticated but wrong role
 
 @login_required
 def expert_dashboard(request):
@@ -79,32 +84,9 @@ def respond_advisory(request, pk):
         'advisory_request': advisory_request,
     })
 
-from django.urls import reverse_lazy
 
 
-class PestCreateView(LoginRequiredMixin, ExpertRequiredMixin, CreateView):
-    model = Pest
-    form_class = PestForm
-    template_name = 'agricultural_expert/pest_form.html'
-    success_url = '/agricultural_expert/dashboard/'
 
-class PestUpdateView(LoginRequiredMixin, ExpertRequiredMixin, UpdateView):
-    model = Pest
-    form_class = PestForm
-    template_name = 'agricultural_expert/pest_form.html'
-    success_url = '/agricultural_expert/dashboard/'
-
-class WeedCreateView(LoginRequiredMixin, ExpertRequiredMixin, CreateView):
-    model = Weed
-    form_class = WeedForm
-    template_name = 'agricultural_expert/weed_form.html'
-    success_url = '/agricultural_expert/dashboard/'
-
-class WeedUpdateView(LoginRequiredMixin, ExpertRequiredMixin, UpdateView):
-    model = Weed
-    form_class = WeedForm
-    template_name = 'agricultural_expert/weed_form.html'
-    success_url = '/agricultural_expert/dashboard/'
 
 
 @login_required

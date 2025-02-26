@@ -10,7 +10,7 @@ class NotificationListView(LoginRequiredMixin, ListView):
     context_object_name = 'notifications'
 
     def get_queryset(self):
-        return Notification.objects.filter(user=self.request.user).order_by('-created_at')
+        return Notification.objects.filter(user=self.request.user, is_read=False).order_by('-created_at')[:5]
 
 @login_required
 def mark_all_read(request):

@@ -1,22 +1,89 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}{{ weed.name }} - Details{% endblock %}
-
+{% block title %}{{ weed.name }} - weed Details{% endblock %}
 {% block content %}
 <div class="container mt-5">
-    <div class="row">
-        <div class="col-md-6">
-            <!-- weed Image -->
-            <img src="{{ weed.image.url }}" class="img-fluid rounded" alt="{{ weed.name }}">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Main weed Card -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-success text-white text-center py-3">
+                    <h2 class="mb-0">{{ weed.name }}</h2>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        <!-- Image Section -->
+                        <div class="col-md-4 d-flex align-items-center justify-content-center">
+                            {% if weed.image %}
+                                <img src="{{ weed.image.url }}" 
+                                     alt="{{ weed.name }}" 
+                                     class="img-fluid" 
+                                     style="max-height: 300px; object-fit: cover;">
+                            {% else %}
+                                <div class="text-muted fst-italic">No image available</div>
+                            {% endif %}
+                        </div>
+                        <!-- Details Section -->
+                        <div class="col-md-8">
+                            <div class="d-flex flex-column h-100">
+                                <div>
+                                    <h5 class="card-title text-muted mb-2">Scientific Name</h5>
+                                    <p class="card-text mb-3">{{ weed.scientific_name }}</p>
+                                    
+                                    <h5 class="card-title text-muted mb-2">Description</h5>
+                                    <p class="card-text mb-3">{{ weed.description }}</p>
+                                    
+                                    <h5 class="card-title text-muted mb-2">Symptoms</h5>
+                                    <p class="card-text mb-3">{{ weed.symptoms }}</p>
+                                    
+                                    <h5 class="card-title text-muted mb-2">Control Measures</h5>
+                                    <p class="card-text mb-3">{{ weed.control_measures }}</p>
+                                </div>
+                                <!-- Action Buttons -->
+                                <div class="mt-auto pt-3 d-flex gap-2">
+                                    <a href="{% url 'weed_edit' weed.pk %}" 
+                                       class="btn btn-primary">
+                                        Edit weed
+                                    </a>
+                                    <a href="{% url 'weed_list' %}" 
+                                       class="btn btn-secondary">
+                                        Back to List
+                                    </a>
+                                    <button type="button" 
+                                            class="btn btn-danger"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#deleteModal">
+                                        Delete weed
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-6">
-            <!-- weed Details -->
-            <h2>{{ weed.name }}</h2>
-            <p><strong>Description:</strong> {{ weed.description }}</p>
-            <p><strong>Symptoms:</strong> {{ weed.symptoms }}</p>
-            <p><strong>Scientific Name:</strong> {{ weed.scientific_name }}</p>
-            <p><strong>Control Measures:</strong> {{ weed.control_measures }}</p>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete "{{ weed.name }}"? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" action="{% url 'weed_delete' weed.pk %}" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

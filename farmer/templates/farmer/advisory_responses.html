@@ -1,73 +1,36 @@
 {% extends 'base.html' %}
 {% block title %}Advisory Responses{% endblock %}
 {% block content %}
-<style>
-    /* Custom Styles */
-    .custom-green {
-        background-color: #2a7221;
-        color: white;
-    }
-    .response-card {
-        border: none;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1rem;
-        transition: transform 0.3s ease-in-out;
-    }
-    .response-card:hover {
-        transform: translateY(-5px);
-    }
-    .response-header {
-        font-size: 1.25rem;
-        font-weight: bold;
-        color: #2a7221;
-    }
-    .response-description {
-        font-size: 0.9rem;
-        color: #555;
-    }
-    .response-recommendation {
-        font-size: 1rem;
-        color: #333;
-        font-style: italic;
-    }
-    .response-footer {
-        font-size: 0.8rem;
-        color: #777;
-    }
-</style>
 
 <div class="container py-5">
     <!-- Page Title -->
-    <h2 class="text-center text-white custom-green py-3 rounded-top">Your Advisory Responses</h2>
+    <h2 class="text-center text-success mb-4">Your Advisory Responses</h2>
 
-    <!-- Advisory Responses -->
     {% if advisory_requests %}
         <div class="row">
             {% for request in advisory_requests %}
                 <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card response-card">
+                    <div class="card shadow-sm">
                         <div class="card-body">
-                            <h5 class="response-header">{{ request.crop_type }} ({{ request.issue_type }})</h5>
-                            <p class="response-description"><strong>Your Description:</strong> {{ request.description }}</p>
-                            <p class="response-recommendation"><strong>Recommendation:</strong> {{ request.recommendation }}</p>
-                            <p class="response-footer"><small>Responded by {{ request.responded_by.username }} on {{ request.updated_at|date:"M d, Y" }}</small></p>
+                            <h5 class="text-success fw-bold">{{ request.crop_type }} ({{ request.issue_type }})</h5>
+                            <p class="text-muted"><strong>Your Description:</strong> {{ request.description }}</p>
+                            <p class="fw-semibold"><strong>Recommendation:</strong> {{ request.recommendation }}</p>
+                            <p class="text-secondary small">Responded by {{ request.responded_by.username }} on {{ request.updated_at|date:"M d, Y" }}</p>
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
     {% else %}
-        <div class="text-center mt-5">
-            <p class="text-muted fst-italic">No responses yet.</p>
-        </div>
+        <p class="text-center text-muted fst-italic">No responses yet.</p>
     {% endif %}
 
     <!-- Back Button -->
     <div class="text-center mt-4">
-        <a href="{% url 'advisory_requests_page' %}" class="btn custom-green rounded-pill px-4 py-2">
-            <i class="fas fa-arrow-left me-2"></i> Back to Requests
+        <a href="{% url 'advisory_requests_page' %}" class="btn btn-outline-success">
+            <i class="fas fa-arrow-left me-1"></i> Back to Requests
         </a>
     </div>
 </div>
+
 {% endblock %}
