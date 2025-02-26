@@ -14,3 +14,9 @@ class UserApproval(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.status}"
+
+    def approve(self):  # Helper method for convenience
+        self.status = 'approved'
+        self.user.is_active = True
+        self.user.save()
+        self.save()

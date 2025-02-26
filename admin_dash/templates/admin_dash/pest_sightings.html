@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Pest Sightings{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Pest Sightings</h1>
+
+    <!-- Search -->
+    <form method="get" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search by farmer, pest, or location...">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+
+    <!-- Pest Sightings Table -->
+    <div class="card dashboard-card">
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead style="background-color: #000; color: #fff;">
+                    <tr>
+                        <th>Sl. No</th>
+                        <th>Farmer</th>
+                        <th>Pest</th>
+                        <th>Location</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sighting in pest_sightings %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ sighting.user.username }}</td>
+                            <td>{{ sighting.pest.name }}</td>
+                            <td>{{ sighting.location }}</td>
+                            <td>{{ sighting.date }}</td>
+                            <td>
+                                <a href="{% url 'view_profile' sighting.user.pk %}" class="btn btn-info btn-sm">👁️ View Farmer</a>
+                                <a href="{% url 'admin_sighting_delete' sighting.pk %}" class="btn btn-danger btn-sm confirm-delete" data-item="{{ sighting.user.username }}'s sighting">🗑️ Delete</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No pest sightings found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal for Delete -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete <strong id="deleteItem"></strong>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.querySelectorAll('.confirm-delete').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const url = this.getAttribute('href');
+            const item = this.getAttribute('data-item');
+            document.getElementById('deleteItem').textContent = item;
+            document.getElementById('confirmDeleteBtn').setAttribute('href', url);
+            const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+            modal.show();
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Register New User{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Register New User</h1>
+
+    <div class="card dashboard-card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" name="register_user" class="btn btn-success">Register User</button>
+                <a href="{% url 'admin_user_management' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

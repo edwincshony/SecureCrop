@@ -5,183 +5,61 @@
 {% block content %}
     <h1 class="mb-4">Admin Dashboard</h1>
 
-    <!-- User Management -->
-    <div class="card dashboard-card">
-        <div class="card-header">User Management</div>
-        <div class="card-body">
-            <form method="get" class="mb-3">
-                <div class="input-group">
-                    <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search by username, email, or role...">
-                    <button type="submit" class="btn btn-primary">Search</button>
+    <div class="row">
+        <!-- User Management -->
+        <div class="col-md-4">
+            <div class="card dashboard-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">User Management</h5>
+                    <p class="card-text">Approve, reject, and manage user accounts.</p>
+                    <a href="{% url 'admin_user_management' %}" class="btn btn-primary">Manage Users</a>
                 </div>
-            </form>
-            {% if users %}
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for user in users %}
-                            <tr>
-                                <td>{{ user.username }}</td>
-                                <td>{{ user.email }}</td>
-                                <td>{{ user.role|default:"N/A" }}</td>
-                                <td>{{ user.userapproval.status|default:"N/A" }}</td>
-                                <td>
-                                    {% if user.userapproval.status == 'pending' %}
-                                        <a href="{% url 'approve_user' user.userapproval.pk %}" class="btn btn-success btn-sm confirm-action" data-action="approve">Approve</a>
-                                        <a href="{% url 'reject_user' user.userapproval.pk %}" class="btn btn-danger btn-sm confirm-action" data-action="reject">Reject</a>
-                                    {% endif %}
-                                    <a href="{% url 'view_profile' user.pk %}" class="btn btn-info btn-sm">View</a>
-                                    <a href="{% url 'delete_user' user.pk %}" class="btn btn-danger btn-sm confirm-delete">Delete</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p>No users found.</p>
-            {% endif %}
+            </div>
         </div>
-    </div>
 
-    <!-- Advisory Requests -->
-    <div class="card dashboard-card">
-        <div class="card-header">Recent Advisory Requests</div>
-        <div class="card-body">
-            {% if advisory_requests %}
-                <ul class="list-group">
-                    {% for request in advisory_requests %}
-                        <li class="list-group-item">
-                            {{ request.crop_type }} ({{ request.issue_type }}) by {{ request.user.username }} - {{ request.description|truncatewords:10 }}
-                            <small class="text-muted">({{ request.created_at|date:"M d, Y" }})</small>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>No recent advisory requests.</p>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Pest Sightings -->
-    <div class="card dashboard-card">
-        <div class="card-header">Recent Pest Sightings</div>
-        <div class="card-body">
-            {% if pest_sightings %}
-                <ul class="list-group">
-                    {% for sighting in pest_sightings %}
-                        <li class="list-group-item">
-                            {{ sighting.pest.name }} at {{ sighting.location }} by {{ sighting.user.username }} on {{ sighting.date }}
-                            <a href="{% url 'admin_sighting_delete' sighting.pk %}" class="btn btn-danger btn-sm float-end confirm-delete">Delete</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>No recent sightings.</p>
-            {% endif %}
-            <a href="{% url 'pest_infestations' %}" class="btn btn-primary mt-2">View All</a>
-        </div>
-    </div>
-
-    <!-- Treatment Outcomes -->
-    <div class="card dashboard-card">
-        <div class="card-header">Recent Treatment Outcomes</div>
-        <div class="card-body">
-            {% if treatments %}
-                <ul class="list-group">
-                    {% for treatment in treatments %}
-                        <li class="list-group-item">
-                            {{ treatment.pest.name }} - {{ treatment.treatment_method }} by {{ treatment.user.username }} on {{ treatment.date_applied }}
-                            <a href="{% url 'admin_treatment_delete' treatment.pk %}" class="btn btn-danger btn-sm float-end confirm-delete">Delete</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>No recent treatments.</p>
-            {% endif %}
-            <a href="{% url 'treatment_outcomes' %}" class="btn btn-primary mt-2">View All</a>
-        </div>
-    </div>
-
-    <!-- Pest/Weed Stats -->
-    <div class="card dashboard-card">
-        <div class="card-header">Database Stats</div>
-        <div class="card-body">
-            <p><strong>Pests:</strong> {{ pests }}</p>
-            <p><strong>Weeds:</strong> {{ weeds }}</p>
-            <a href="{% url 'pest_list' %}" class="btn btn-info">View Pest List</a>
-            <a href="{% url 'weed_list' %}" class="btn btn-info">View Weed List</a>
-        </div>
-    </div>
-
-    <!-- Confirmation Modals -->
-    <div class="modal fade" id="confirmActionModal" tabindex="-1" aria-labelledby="confirmActionModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmActionModalLabel">Confirm Action</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- Advisory Requests -->
+        <div class="col-md-4">
+            <div class="card dashboard-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Advisory Requests</h5>
+                    <p class="card-text">View and respond to crop advisory requests.</p>
+                    <a href="{% url 'admin_advisory_requests' %}" class="btn btn-primary">View Requests</a>
                 </div>
-                <div class="modal-body">
-                    Are you sure you want to <span id="actionType"></span> this user?
+            </div>
+        </div>
+
+        <!-- Pest Sightings -->
+        <div class="col-md-4">
+            <div class="card dashboard-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Pest Sightings</h5>
+                    <p class="card-text">Review and manage reported pest sightings.</p>
+                    <a href="{% url 'admin_pest_sightings' %}" class="btn btn-primary">View Sightings</a>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <a id="confirmActionBtn" href="#" class="btn btn-primary">Confirm</a>
+            </div>
+        </div>
+
+        <!-- Treatment Outcomes -->
+        <div class="col-md-4 mt-4">
+            <div class="card dashboard-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Treatment Outcomes</h5>
+                    <p class="card-text">Monitor effectiveness of pest control treatments.</p>
+                    <a href="{% url 'admin_treatment_outcomes' %}" class="btn btn-primary">View Treatments</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Database Stats -->
+        <div class="col-md-4 mt-4">
+            <div class="card dashboard-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Pest & Weed Database</h5>
+                    <p class="card-text">Manage pest and weed records in the system.</p>
+                    <a href="{% url 'pest_list' %}" class="btn btn-info">View Pests</a>
+                    <a href="{% url 'weed_list' %}" class="btn btn-info">View Weeds</a>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to delete this item?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Delete</a>
-                </div>
-            </div>
-        </div>
-    </div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    document.querySelectorAll('.confirm-action').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const url = this.getAttribute('href');
-            const action = this.getAttribute('data-action');
-            document.getElementById('actionType').textContent = action;
-            document.getElementById('confirmActionBtn').setAttribute('href', url);
-            document.getElementById('confirmActionBtn').className = `btn btn-${action === 'approve' ? 'success' : 'danger'}`;
-            const modal = new bootstrap.Modal(document.getElementById('confirmActionModal'));
-            modal.show();
-        });
-    });
-
-    document.querySelectorAll('.confirm-delete').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const url = this.getAttribute('href');
-            document.getElementById('confirmDeleteBtn').setAttribute('href', url);
-            const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
-            modal.show();
-        });
-    });
-</script>
 {% endblock %}

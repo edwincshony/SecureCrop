@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Users{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Manage Users</h1>
+
+    <!-- Register and View Pending Approvals Buttons -->
+    <div class="d-flex justify-content-between mb-4">
+        <a href="{% url 'pending_approvals' %}" class="btn btn-primary">👀 View Pending Approvals</a>
+        <a href="{% url 'register_user' %}" class="btn btn-success">👤 Register User</a>
+    </div>
+
+    <!-- Real-Time Search Input -->
+    <div class="mb-3">
+        <div class="input-group">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search by username, email, or role..." autocomplete="off">
+            <button id="clearSearch" class="btn btn-secondary">Clear</button>
+        </div>
+    </div>
+
+    <!-- All Users Table -->
+    <div class="card dashboard-card">
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead style="background-color: #000; color: #fff;">
+                    <tr>
+                        <th>Sl. No</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTable">
+                    {% for user in users %}
+                        <tr class="user-row" data-username="{{ user.username }}" data-email="{{ user.email }}" data-role="{{ user.role|default:'N/A' }}">
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ user.first_name|default:"N/A" }}</td>
+                            <td>{{ user.last_name|default:"N/A" }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.role|default:"N/A" }}</td>
+                            <td>
+                                <a href="{% url 'view_profile' user.pk %}" class="btn btn-info btn-sm">👁️ View Profile</a>
+                                <a href="{% url 'delete_user' user.pk %}" class="btn btn-danger btn-sm confirm-delete" data-username="{{ user.username }}">🗑️ Delete</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr id="noUsersMessage">
+                            <td colspan="7" class="text-center">No users found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal for Delete -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete user <strong id="deleteUsername"></strong>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const searchInput = document.getElementById("searchInput");
+        const clearSearch = document.getElementById("clearSearch");
+        const rows = document.querySelectorAll("#usersTable .user-row");
+        const noUsersMessage = document.getElementById("noUsersMessage");
+
+        searchInput.addEventListener("input", function() {
+            const searchTerm = searchInput.value.toLowerCase();
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const username = row.dataset.username.toLowerCase();
+                const email = row.dataset.email.toLowerCase();
+                const role = row.dataset.role.toLowerCase();
+
+                if (username.includes(searchTerm) || email.includes(searchTerm) || role.includes(searchTerm)) {
+                    row.style.display = "";
+                    visibleCount++;
+                } else {
+                    row.style.display = "none";
+                }
+            });
+
+            noUsersMessage.style.display = visibleCount === 0 ? "" : "none";
+        });
+
+        clearSearch.addEventListener("click", function() {
+            searchInput.value = "";
+            rows.forEach(row => row.style.display = "");
+            noUsersMessage.style.display = "none";
+        });
+
+        document.querySelectorAll(".confirm-delete").forEach(link => {
+            link.addEventListener("click", function(e) {
+                e.preventDefault();
+                const url = this.getAttribute("href");
+                const username = this.getAttribute("data-username");
+                document.getElementById("deleteUsername").textContent = username;
+                document.getElementById("confirmDeleteBtn").setAttribute("href", url);
+                const modal = new bootstrap.Modal(document.getElementById("confirmDeleteModal"));
+                modal.show();
+            });
+        });
+    });
+</script>
+{% endblock %}

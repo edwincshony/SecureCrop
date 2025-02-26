@@ -6,8 +6,9 @@ from django.contrib.auth.views import LoginView
 from .forms import SignupForm, FarmerProfileForm, ExpertProfileForm
 from django import forms
 from .models import CustomUser
+from admin_dash.models import UserApproval
+from django.urls import reverse  # Add this import
 
-# Form for CustomUser fields
 class CustomUserForm(forms.ModelForm):
     class Meta:
         model = CustomUser
@@ -23,36 +24,41 @@ def signup(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
+            messages.success(request, "Account created. Awaiting admin approval.")
             return render(request, 'accounts/signup_success.html')
     else:
         form = SignupForm()
     return render(request, 'accounts/signup.html', {'form': form})
 
 class CustomLoginView(LoginView):
-    template_name = 'accounts/login.html'  # Your login template
+    template_name = 'accounts/login.html'
+
+    def form_valid(self, form):
+        user = form.get_user()
+        if not user.is_superuser:
+            try:
+                approval = UserApproval.objects.get(user=user)
+                if approval.status != 'approved':
+                    messages.error(self.request, "Your account is pending approval or has been rejected.")
+                    return self.form_invalid(form)
+            except UserApproval.DoesNotExist:
+                messages.error(self.request, "No approval record found. Contact an admin.")
+                return self.form_invalid(form)
+        return super().form_valid(form)
 
     def get_success_url(self):
         user = self.request.user
-        print(f"User authenticated: {user.username}")  # Debug
-        print(f"User role: {user.role}")  # Debug
-        
-        # Redirect based on user role
-        if user.role == 'farmer':
-            print("Redirecting farmer to dashboard")
-            return '/farmer_dashboard/'
+        if user.is_superuser:
+            return reverse('admin_dashboard')  # Use URL name instead of hardcoding
+        elif user.role == 'farmer':
+            return reverse('farmer_dashboard')
         elif user.role == 'agricultural_expert':
-            print("Redirecting expert to expert_dashboard")
-            return '/expert_dashboard/'
-        elif user.role == 'admin':
-            print("Redirecting admin to admin_dashboard")
-            return '/admin_dashboard/'
+            return reverse('expert_dashboard')
         else:
-            print("Redirecting to profile (default)")
-            return '/profile/'
+            return reverse('profile')
 
     def form_invalid(self, form):
-        # Add error message for invalid login attempts
-        messages.error(self.request, 'Invalid username or password')
+        messages.error(self.request, 'Invalid username, password, or account status.')
         return super().form_invalid(form)
 
 @login_required
@@ -87,4 +93,3 @@ def profile(request):
 def logout_view(request):
     logout(request)
     return redirect('/login/')
-

@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Advisory Requests{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Advisory Requests</h1>
+
+    <!-- Search -->
+    <form method="get" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search by farmer, crop, issue, or expert...">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+
+    <!-- Advisory Requests Table -->
+    <div class="card dashboard-card">
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead style="background-color: #000; color: #fff;">
+                    <tr>
+                        <th>Sl. No</th>
+                        <th>Farmer</th>
+                        <th>Crop Type</th>
+                        <th>Issue Type</th>
+                        <th>Status</th>
+                        <th>Responded By</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in advisory_requests %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ request.user.username }}</td>
+                            <td>{{ request.crop_type }}</td>
+                            <td>{{ request.issue_type }}</td>
+                            <td>{{ request.status }}</td>
+                            <td>{{ request.responded_by.username|default:"N/A" }}</td>
+                            <td>
+                                <a href="{% url 'view_profile' request.user.pk %}" class="btn btn-info btn-sm">👁️ View Farmer</a>
+                                {% if request.responded_by %}
+                                    <a href="{% url 'view_profile' request.responded_by.pk %}" class="btn btn-info btn-sm ms-1">👁️ View Expert</a>
+                                {% endif %}
+                                <a href="{% url 'admin_advisory_requests_delete' request.pk %}" class="btn btn-danger btn-sm confirm-delete" data-item="{{ request.user.username }}'s request">🗑️ Delete</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">No advisory requests found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal for Delete -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete <strong id="deleteItem"></strong>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.querySelectorAll('.confirm-delete').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const url = this.getAttribute('href');
+            const item = this.getAttribute('data-item');
+            document.getElementById('deleteItem').textContent = item;
+            document.getElementById('confirmDeleteBtn').setAttribute('href', url);
+            const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+            modal.show();
+        });
+    });
+</script>
+{% endblock %}

@@ -2,119 +2,45 @@
 {% load crispy_forms_tags %}
 {% block title %}Farmer Dashboard{% endblock %}
 {% block content %}
-<!-- Page Content -->
-<div class="container-fluid py-5">
-    <h1 class="mb-5 text-primary fw-bold text-center">Welcome, {{ request.user.username }}!</h1>
-    <!-- First Row: Two Cards -->
-    <div class="row g-4 mb-4 justify-content-center">
+<div class="container py-5 text-center">
+    <h1 class="mb-4 text-primary fw-bold">Welcome, {{ request.user.username }}!</h1>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
         <!-- Pest Sightings Card -->
-        <div class="col-md-6 col-lg-5">
-            <div class="card shadow border-0">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="fas fa-bug me-2"></i> Recent Pest Sightings</h5>
+        <div class="col">
+            <div class="card h-100 border-0 shadow-lg">
+                <div class="card-header bg-success text-white text-uppercase">
+                    <h6 class="mb-0">Recent Pest Sightings</h6>
                 </div>
                 <div class="card-body">
-                    {% if sightings %}
-                        <ul class="list-group list-group-flush">
-                            {% for sighting in sightings %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center py-3">
-                                    <div>
-                                        <strong class="text-dark">{{ sighting.pest.name }}</strong><br>
-                                        <small class="text-muted">{{ sighting.location }} on {{ sighting.date }}</small>
-                                    </div>
-                                    <a href="{% url 'sighting_delete' sighting.pk %}" class="btn btn-outline-danger btn-sm rounded-circle confirm-delete" data-item="Pest Sighting">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p class="text-center text-muted my-4">No recent sightings.</p>
-                    {% endif %}
-                    <a href="{% url 'pest_sighting_create' %}" class="btn btn-success w-100 mt-3">Report New</a>
+                    <p class="text-muted">Track and report pest sightings in your fields.</p>
+                    <a href="{% url 'pest_sighting_create' %}" class="btn btn-success w-100">Report New</a>
                 </div>
             </div>
         </div>
         <!-- Treatment Outcomes Card -->
-        <div class="col-md-6 col-lg-5">
-            <div class="card shadow border-0">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="fas fa-syringe me-2"></i> Recent Treatments</h5>
+        <div class="col">
+            <div class="card h-100 border-0 shadow-lg">
+                <div class="card-header bg-info text-white text-uppercase">
+                    <h6 class="mb-0">Recent Treatments</h6>
                 </div>
                 <div class="card-body">
-                    {% if treatments %}
-                        <ul class="list-group list-group-flush">
-                            {% for treatment in treatments %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center py-3">
-                                    <div>
-                                        <strong class="text-dark">{{ treatment.pest.name }}</strong><br>
-                                        <small class="text-muted">{{ treatment.treatment_method }} ({{ treatment.effectiveness }}) on {{ treatment.date_applied }}</small>
-                                    </div>
-                                    <a href="{% url 'treatment_delete' treatment.pk %}" class="btn btn-outline-danger btn-sm rounded-circle confirm-delete" data-item="Treatment Outcome">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p class="text-center text-muted my-4">No recent treatments.</p>
-                    {% endif %}
-                    <a href="{% url 'treatment_outcome_create' %}" class="btn btn-info w-100 mt-3">Report New</a>
+                    <p class="text-muted">Monitor and report treatment effectiveness.</p>
+                    <a href="{% url 'treatment_outcome_create' %}" class="btn btn-info w-100">Report New</a>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Second Row: One Card -->
-    <div class="row g-4 justify-content-center">
         <!-- Advisory Requests Card -->
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow border-0">
-                <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="fas fa-question-circle me-2"></i> Advisory Requests</h5>
-                    <a href="{% url 'advisory_requests_page' %}" class="btn btn-sm btn-outline-dark">
-                        View Details <i class="fas fa-arrow-right ms-1"></i>
-                    </a>
+        <div class="col">
+            <div class="card h-100 border-0 shadow-lg">
+                <div class="card-header bg-warning text-dark text-uppercase">
+                    <h6 class="mb-0">Advisory Requests</h6>
                 </div>
                 <div class="card-body">
-                    <p class="text-muted text-center mb-0 py-3">
-                        Submit new advisory requests or view recent submissions.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Confirmation Modal -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to delete this <span id="itemType"></span>?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Delete</a>
+                    <p class="text-muted">Seek expert advice on field management.</p>
+                    <a href="{% url 'advisory_requests_page' %}" class="btn btn-warning text-dark w-100">View Details</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
-{% block extra_js %}
-<script>
-    document.querySelectorAll('.confirm-delete').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const url = this.getAttribute('href');
-            const itemType = this.getAttribute('data-item');
-            document.getElementById('itemType').textContent = itemType;
-            document.getElementById('confirmDeleteBtn').setAttribute('href', url);
-            const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
-            modal.show();
-        });
-    });
-</script>
 {% endblock %}
