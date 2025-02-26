@@ -95,11 +95,21 @@
                                         <i class="bi bi-gear me-2"></i>Admin Dashboard
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'messaging:conversation_list' %}">
+                                        <i class="bi bi-person me-2"></i>Inbox
+                                    </a>
+                                </li>
                             {% endif %}
                             {% if user.role == "farmer" %}
                                 <li class="nav-item">
                                     <a class="nav-link" href="{% url 'profile' %}">
                                         <i class="bi bi-person me-2"></i>Manage Profile
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'messaging:conversation_list' %}">
+                                        <i class="bi bi-person me-2"></i>Inbox
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -116,6 +126,11 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="{% url 'profile' %}">
                                         <i class="bi bi-person me-2"></i>Manage Profile
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'messaging:conversation_list' %}">
+                                        <i class="bi bi-person me-2"></i>Inbox
                                     </a>
                                 </li>
                                 <li class="nav-item">

@@ -35,6 +35,7 @@ urlpatterns = [
     path('admin_dash/', include('admin_dash.urls')),
     path('expert_dashboard/', expert_dashboard, name='expert_dashboard'),
     path('farmer_dashboard/', farmer_dashboard, name='farmer_dashboard'),
+    path('messaging/', include('messaging.urls')),  # Add this line
 
 
 
