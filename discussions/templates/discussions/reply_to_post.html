@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Reply to Post in {{ post.thread.title }}{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Reply to Post in {{ post.thread.title }}</h1>
+
+    <div class="card dashboard-card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary">Reply</button>
+                <a href="{% url 'discussions:thread_detail' post.thread.id %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

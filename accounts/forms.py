@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.core.validators import MinLengthValidator
+from django.core.validators import MinLengthValidator, RegexValidator
 from .models import CustomUser, FarmerProfile, ExpertProfile
 
 class SignupForm(UserCreationForm):
@@ -16,9 +17,15 @@ class SignupForm(UserCreationForm):
     phone_number = forms.CharField(
         required=False,
         max_length=10,
-        validators=[MinLengthValidator(10)],
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Optional'}),
-        help_text="Phone number must be exactly 10 digits if provided."
+        validators=[
+            MinLengthValidator(10, message="Phone number must be exactly 10 digits."),
+            RegexValidator(
+                regex=r'^[6-9]\d{9}$',
+                message="Phone number must start with 6, 7, 8, or 9 and be exactly 10 digits."
+            )
+        ],
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Optional (e.g., 9876543210)'}),
+        help_text="Phone number must start with 6, 7, 8, or 9 and be exactly 10 digits if provided."
     )
     first_name = forms.CharField(
         required=False,

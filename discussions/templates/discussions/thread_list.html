@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} Threads{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">{{ category.name }} Threads</h1>
+
+    {% if user.role in allowed_roles %}
+        <a href="{% url 'discussions:create_thread' category.id %}" class="btn btn-success mb-3">Create Thread</a>
+    {% endif %}
+
+    {% if threads %}
+        <div class="card dashboard-card">
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for thread in threads %}
+                        <li class="list-group-item">
+                            {{ thread.title }}
+                            <small class="text-muted">by {{ thread.created_by.username }} on {{ thread.created_at|date:"M d, Y" }}</small>
+                            <a href="{% url 'discussions:thread_detail' thread.id %}" class="btn btn-primary btn-sm float-end">View</a>
+                            {% if user.role in "agricultural_expert,admin" and thread.is_pinned %}
+                                <span class="badge bg-warning text-dark ms-2">Pinned</span>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info">No threads found in this category.</div>
+    {% endif %}
+    <a href="{% url 'discussions:category_list' %}" class="btn btn-secondary mt-3">Back to Categories</a>
+{% endblock %}

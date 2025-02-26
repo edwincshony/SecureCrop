@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Discussion Categories{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Discussion Categories</h1>
+
+    {% if can_add_category %}
+        <a href="{% url 'discussions:add_category' %}" class="btn btn-success mb-3">Add Category</a>
+    {% endif %}
+
+    {% if categories %}
+        <div class="card dashboard-card">
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for category in categories %}
+                        <li class="list-group-item">
+                            {{ category.name }}
+                            <small class="text-muted">by {{ category.created_by.username }} on {{ category.created_at|date:"M d, Y" }}</small>
+                            <a href="{% url 'discussions:thread_list' category.id %}" class="btn btn-primary btn-sm float-end">View Threads</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info">No categories found.</div>
+    {% endif %}
+{% endblock %}
