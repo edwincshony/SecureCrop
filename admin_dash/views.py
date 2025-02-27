@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import View
+from django.urls import reverse_lazy
 from django.views.generic import DeleteView
 from accounts.models import FarmerProfile, ExpertProfile  # Import profile models
 from django.contrib import messages
@@ -21,7 +23,7 @@ class AdminRequiredMixin(UserPassesTestMixin):
 def admin_dashboard(request):
     if not request.user.is_superuser:
         messages.error(request, "Only admins can access this dashboard.")
-        return redirect('accounts:login')
+        return redirect('login')
 
     query = request.GET.get('q', '')
     users = CustomUser.objects.filter(~Q(is_superuser=True))
@@ -52,7 +54,7 @@ def admin_dashboard(request):
 @login_required
 def approve_user(request, pk):
     if not request.user.is_superuser:
-        return redirect('accounts:login')
+        return redirect('login')
     approval = get_object_or_404(UserApproval, pk=pk)
     if request.method == 'POST':
         approval.status = 'approved'
@@ -66,7 +68,7 @@ def approve_user(request, pk):
 @login_required
 def reject_user(request, pk):
     if not request.user.is_superuser:
-        return redirect('accounts:login')
+        return redirect('login')
     approval = get_object_or_404(UserApproval, pk=pk)
     if request.method == 'POST':
         approval.status = 'rejected'
@@ -78,7 +80,7 @@ def reject_user(request, pk):
 @login_required
 def view_profile(request, pk):
     if not request.user.is_superuser:
-        return redirect('accounts:login')
+        return redirect('login')
     user = get_object_or_404(CustomUser, pk=pk)
     profile = user.farmer_profile if user.role == 'farmer' else user.expert_profile if user.role == 'agricultural_expert' else None
     return render(request, 'admin_dash/view_profile.html', {'user': user, 'profile': profile})
@@ -103,7 +105,7 @@ class UserDeleteView(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
 def admin_user_management(request):
     if not request.user.is_superuser:
         messages.error(request, "Unauthorized access.")
-        return redirect('accounts:login')
+        return redirect('login')
 
     query = request.GET.get('q', '')
     # Filter for approved users only:
@@ -133,7 +135,7 @@ def admin_user_management(request):
 def register_user(request):
     if not request.user.is_superuser:
         messages.error(request, "Unauthorized access.")
-        return redirect('accounts:login')
+        return redirect('login')
 
     if request.method == 'POST':
         form = SignupForm(request.POST)
@@ -160,7 +162,7 @@ def register_user(request):
 def pending_approvals(request):
     if not request.user.is_superuser:
         messages.error(request, "Unauthorized access.")
-        return redirect('accounts:login')
+        return redirect('login')
 
     query = request.GET.get('q', '')
     pending_approvals = UserApproval.objects.filter(status='pending').order_by('user__username')
@@ -178,7 +180,7 @@ def pending_approvals(request):
 def admin_advisory_requests(request):
     if not request.user.is_superuser:
         messages.error(request, "Unauthorized access.")
-        return redirect('accounts:login')
+        return redirect('login')
     advisory_requests = AdvisoryRequest.objects.all().order_by('-created_at')
     return render(request, 'admin_dash/advisory_requests.html', {'advisory_requests': advisory_requests})
 
@@ -186,7 +188,7 @@ def admin_advisory_requests(request):
 def admin_pest_sightings(request):
     if not request.user.is_superuser:
         messages.error(request, "Unauthorized access.")
-        return redirect('accounts:login')
+        return redirect('login')
     pest_sightings = PestSighting.objects.all().order_by('-date')
     return render(request, 'admin_dash/pest_sightings.html', {'pest_sightings': pest_sightings})
 
@@ -194,7 +196,7 @@ def admin_pest_sightings(request):
 def admin_treatment_outcomes(request):
     if not request.user.is_superuser:
         messages.error(request, "Unauthorized access.")
-        return redirect('accounts:login')
+        return redirect('login')
     treatments = TreatmentOutcome.objects.all().order_by('-date_applied')
     return render(request, 'admin_dash/treatment_outcomes.html', {'treatments': treatments})
 
@@ -203,13 +205,16 @@ class AdvisoryRequestDeleteView(LoginRequiredMixin, AdminRequiredMixin, DeleteVi
     success_url = '/admin_dash/admin/advisory/'
 
 
-class PestSightingDeleteView(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
-    model = PestSighting
-    template_name = 'admin_dash/confirm_delete.html'
-    success_url = '/admin_dash/dashboard/'
+class PestSightingDeleteView(LoginRequiredMixin, View):
+    def get(self, request, pk, *args, **kwargs):
+        sighting = get_object_or_404(PestSighting, pk=pk)
+        sighting.delete()
+        return redirect(reverse_lazy('admin_pest_sightings'))  # Redirect immediately
 
-class TreatmentOutcomeDeleteView(LoginRequiredMixin, AdminRequiredMixin, DeleteView):
-    model = TreatmentOutcome
-    template_name = 'admin_dash/confirm_delete.html'
-    success_url = '/admin_dash/dashboard/'
+
+class TreatmentOutcomeDeleteView(LoginRequiredMixin, View):
+    def get(self, request, pk, *args, **kwargs):
+        outcome = get_object_or_404(TreatmentOutcome, pk=pk)
+        outcome.delete()
+        return redirect(reverse_lazy('admin_treatment_outcomes'))  # Redirect immediately
 

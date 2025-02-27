@@ -44,7 +44,7 @@
                             <td>{{ user.email }}</td>
                             <td>{{ user.role|default:"N/A" }}</td>
                             <td>
-                                <a href="{% url 'view_profile' user.pk %}" class="btn btn-info btn-sm">👁️ View Profile</a>
+                                <a href="{% url 'public_profile' user.username %}" class="btn btn-info btn-sm">👁️ View Profile</a>
                                 <a href="{% url 'delete_user' user.pk %}" class="btn btn-danger btn-sm confirm-delete" data-username="{{ user.username }}">🗑️ Delete</a>
                             </td>
                         </tr>

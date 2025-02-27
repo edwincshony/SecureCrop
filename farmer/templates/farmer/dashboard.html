@@ -13,7 +13,9 @@
                 </div>
                 <div class="card-body">
                     <p class="text-muted">Track and report pest sightings in your fields.</p>
-                    <a href="{% url 'pest_sighting_create' %}" class="btn btn-success w-100">Report New</a>
+                    <a href="{% url 'pest_sighting_create' %}" class="btn btn-success w-100">Report New</a><br><br>
+                    <a href="{% url 'pest_infestations' %}" class="btn btn-success w-100">View Pest Sightings</a>
+
                 </div>
             </div>
         </div>
@@ -25,7 +27,8 @@
                 </div>
                 <div class="card-body">
                     <p class="text-muted">Monitor and report treatment effectiveness.</p>
-                    <a href="{% url 'treatment_outcome_create' %}" class="btn btn-info w-100">Report New</a>
+                    <a href="{% url 'treatment_outcome_create' %}" class="btn btn-info w-100">Report New</a><br><br>
+                    <a href="{% url 'treatment_outcomes' %}" class="btn btn-info w-100">View Treatment Outcomes</a>
                 </div>
             </div>
         </div>

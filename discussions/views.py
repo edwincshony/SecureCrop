@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages  # Add this import
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Category, Thread, Post, Reply
 from .forms import ThreadForm, PostForm, ReplyForm, CategoryForm
+from django.urls import reverse  # Ensure this is present
 from accounts.models import CustomUser
 from notifications.models import Notification  # For notifications on replies or pins
 
@@ -134,17 +136,6 @@ def add_category(request):
     }
     return render(request, 'discussions/add_category.html', context)
 
-@login_required
-def pin_thread(request, thread_id):
-    thread = get_object_or_404(Thread, id=thread_id)
-    if request.user.role not in ['agricultural_expert', 'admin']:
-        messages.error(request, "Only experts and admins can pin threads.")
-        return redirect('discussions:thread_detail', thread_id=thread.id)
-    
-    thread.is_pinned = not thread.is_pinned
-    thread.save()
-    messages.success(request, f"Thread {'pinned' if thread.is_pinned else 'unpinned'} successfully.")
-    return redirect('discussions:thread_detail', thread_id=thread.id)
 
 @login_required
 def upvote_post(request, post_id):

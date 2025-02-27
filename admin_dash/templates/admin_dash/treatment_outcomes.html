@@ -31,7 +31,7 @@
                             <td>{{ treatment.effectiveness }}</td>
                             <td>{{ treatment.date_applied }}</td>
                             <td>
-                                <a href="{% url 'view_profile' treatment.user.pk %}" class="btn btn-info btn-sm">👁️ View Farmer</a>
+                                <a href="{% url 'public_profile' treatment.user.username %}" class="btn btn-info btn-sm">👁️ View Farmer</a>
                                 <a href="{% url 'admin_treatment_delete' treatment.pk %}" class="btn btn-danger btn-sm confirm-delete" data-item="{{ treatment.user.username }}'s outcome">🗑️ Delete</a>
                             </td>
                         </tr>

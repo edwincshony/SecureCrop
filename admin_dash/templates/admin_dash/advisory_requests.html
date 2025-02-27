@@ -34,12 +34,13 @@
                             <td>{{ request.status }}</td>
                             <td>{{ request.responded_by.username|default:"N/A" }}</td>
                             <td>
-                                <a href="{% url 'view_profile' request.user.pk %}" class="btn btn-info btn-sm">👁️ View Farmer</a>
+                                <a href="{% url 'public_profile' request.user.username %}" class="btn btn-info btn-sm">👁️ View Farmer</a>
                                 {% if request.responded_by %}
-                                    <a href="{% url 'view_profile' request.responded_by.pk %}" class="btn btn-info btn-sm ms-1">👁️ View Expert</a>
+                                    <a href="{% url 'public_profile' request.responded_by.username %}" class="btn btn-info btn-sm ms-1">👁️ View Expert</a>
                                 {% endif %}
                                 <a href="{% url 'admin_advisory_requests_delete' request.pk %}" class="btn btn-danger btn-sm confirm-delete" data-item="{{ request.user.username }}'s request">🗑️ Delete</a>
                             </td>
+                            
                         </tr>
                     {% empty %}
                         <tr>

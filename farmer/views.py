@@ -19,7 +19,7 @@ class FarmerRequiredMixin(UserPassesTestMixin):
 def farmer_dashboard(request):
     if request.user.role != 'farmer':
         messages.error(request, "Only farmers can access this dashboard.")
-        return redirect('accounts:login')
+        return redirect('login')
 
     notifications = Notification.objects.filter(user=request.user, is_read=False)[:5]
     sightings = PestSighting.objects.filter(user=request.user).order_by('-date')[:5]
@@ -49,7 +49,7 @@ def farmer_dashboard(request):
 @login_required
 def advisory_responses(request):
     if request.user.role != 'farmer':
-        return redirect('accounts:login')
+        return redirect('login')
     advisory_requests = AdvisoryRequest.objects.filter(user=request.user, status='responded').order_by('-updated_at')
     return render(request, 'farmer/advisory_responses.html', {'advisory_requests': advisory_requests})
 

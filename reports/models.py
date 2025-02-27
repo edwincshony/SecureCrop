@@ -7,10 +7,11 @@ class PestSighting(models.Model):
     pest = models.ForeignKey(Pest, on_delete=models.CASCADE)
     location = models.CharField(max_length=100)
     date = models.DateField()
+    time = models.TimeField(null=True, blank=True, help_text="Optional exact time of sighting")
     notes = models.TextField(blank=True)
 
     def __str__(self):
-        return f"{self.pest.name} sighted by {self.user.username} on {self.date}"
+        return f"{self.pest.name} sighted by {self.user.username} on {self.date} at {self.time or 'Unknown time'}"
 
 class TreatmentOutcome(models.Model):
     EFFECTIVENESS_CHOICES = [
@@ -23,8 +24,9 @@ class TreatmentOutcome(models.Model):
     pest = models.ForeignKey(Pest, on_delete=models.CASCADE)
     treatment_method = models.CharField(max_length=200)
     date_applied = models.DateField()
+    time_applied = models.TimeField(null=True, blank=True, help_text="Optional exact time of treatment")
     effectiveness = models.CharField(max_length=20, choices=EFFECTIVENESS_CHOICES)
     notes = models.TextField(blank=True)
 
     def __str__(self):
-        return f"Treatment for {self.pest.name} by {self.user.username} on {self.date_applied}"
+        return f"Treatment for {self.pest.name} by {self.user.username} on {self.date_applied} at {self.time_applied or 'Unknown time'}"

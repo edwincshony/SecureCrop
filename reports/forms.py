@@ -6,9 +6,10 @@ from datetime import date
 class PestSightingForm(forms.ModelForm):
     class Meta:
         model = PestSighting
-        fields = ['pest', 'location', 'date', 'notes']
+        fields = ['pest', 'location', 'date', 'time', 'notes']
         widgets = {
-            'date': forms.DateInput(attrs={'type': 'date', 'max': date.today().isoformat()}),  # Set max attribute to today's date
+            'date': forms.DateInput(attrs={'type': 'date', 'max': date.today().isoformat()}),  # Set max to today's date
+            'time': forms.TimeInput(attrs={'type': 'time', 'required': False}),
         }
 
     def clean_date(self):
@@ -20,9 +21,10 @@ class PestSightingForm(forms.ModelForm):
 class TreatmentOutcomeForm(forms.ModelForm):
     class Meta:
         model = TreatmentOutcome
-        fields = ['pest', 'treatment_method', 'date_applied', 'effectiveness', 'notes']
+        fields = ['pest', 'treatment_method', 'date_applied', 'time_applied', 'effectiveness', 'notes']
         widgets = {
             'date_applied': forms.DateInput(attrs={'type': 'date', 'max': date.today().isoformat()}),  # Set max to today's date
+            'time_applied': forms.TimeInput(attrs={'type': 'time', 'required': False}),
         }
 
     def clean_date_applied(self):

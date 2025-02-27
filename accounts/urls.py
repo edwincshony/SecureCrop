@@ -9,5 +9,6 @@ urlpatterns = [
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('profile/', views.profile, name='profile'),
+    path('profile/<str:username>/', views.public_profile, name='public_profile'),  # New URL
 
 ]

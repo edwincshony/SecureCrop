@@ -16,19 +16,21 @@ from .forms import PestForm, WeedForm
 # Role check mixin for experts
 class ExpertRequiredMixin(UserPassesTestMixin):
     def test_func(self):
-        # Check if user is authenticated and has the 'agricultural_expert' role
-        return self.request.user.is_authenticated and getattr(self.request.user, 'role', None) == 'agricultural_expert'
+        # Allow both superusers and agricultural experts
+        return self.request.user.is_authenticated and (
+            self.request.user.is_superuser or getattr(self.request.user, 'role', None) == 'agricultural_expert'
+        )
 
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:
             return redirect('login')  # Redirect to login if not authenticated
-        raise PermissionDenied  # Raise 403 if authenticated but wrong role
+        raise PermissionDenied  # Raise 403 if authenticated but lacks permissions
 
 @login_required
 def expert_dashboard(request):
     if request.user.role != 'agricultural_expert':
         messages.error(request, "Only agricultural experts can access this dashboard.")
-        return redirect('accounts:login')
+        return redirect('login')
 
     # Fetch data for the dashboard
     notifications = Notification.objects.filter(user=request.user, is_read=False)[:5]
@@ -47,7 +49,7 @@ def expert_dashboard(request):
 def all_advisory_requests(request):
     if request.user.role != 'agricultural_expert':
         messages.error(request, "Only agricultural experts can access this page.")
-        return redirect('accounts:login')
+        return redirect('login')
 
     # Fetch all pending advisory requests
     advisory_requests = AdvisoryRequest.objects.filter(status='pending').order_by('-created_at')
@@ -59,7 +61,7 @@ def all_advisory_requests(request):
 @login_required
 def respond_advisory(request, pk):
     if request.user.role != 'agricultural_expert':
-        return redirect('accounts:login')
+        return redirect('login')
     advisory_request = get_object_or_404(AdvisoryRequest, pk=pk, status='pending')
     if request.method == 'POST':
         form = RecommendationForm(request.POST, instance=advisory_request)
@@ -85,13 +87,9 @@ def respond_advisory(request, pk):
     })
 
 
-
-
-
-
 @login_required
 def manage_database(request):
     if request.user.role != 'agricultural_expert':
         messages.error(request, "Only agricultural experts can access this page.")
-        return redirect('accounts:login')
+        return redirect('login')
     return render(request, 'agricultural_expert/manage_database.html')

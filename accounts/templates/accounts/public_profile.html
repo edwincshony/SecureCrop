@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ profile_owner.username }}'s Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="text-center mb-4">{{ profile_owner.username }}'s {{ profile_owner.role }} Profile</h1>
+
+            <div class="card dashboard-card">
+                <div class="card-body">
+                    <h5 class="card-title">User Information</h5>
+                    <p><strong>Username:</strong> {{ profile_owner.username }}</p>
+                    <p><strong>Full Name:</strong> {{ profile_owner.first_name }} {{ profile_owner.last_name }}</p>
+                    <p><strong>Email:</strong> {{ profile_owner.email }}</p>
+                    <p><strong>Phone Number:</strong> {{ profile_owner.phone_number|default:"Not provided" }}</p>
+                    <p><strong>Role:</strong> {{ profile_owner.role }}</p>
+
+                    {% if profile_owner.role == 'farmer' and profile %}
+                        <h5 class="card-title mt-3">Farmer Details</h5>
+                        <p><strong>Location:</strong> {{ profile.location|default:"Not provided" }}</p>
+                        <p><strong>Crop Types:</strong> {{ profile.crop_types|default:"Not provided" }}</p>
+                        {% if profile.profile_picture %}
+                            <p><strong>Profile Picture:</strong> <img src="{{ profile.profile_picture.url }}" alt="{{ profile_owner.username }}'s profile" class="profile-photo"></p>
+                        {% endif %}
+                    {% elif profile_owner.role == 'agricultural_expert' and profile %}
+                        <h5 class="card-title mt-3">Expert Details</h5>
+                        <p><strong>Expertise:</strong> {{ profile.expertise|default:"Not provided" }}</p>
+                        <p><strong>Experience Years:</strong> {{ profile.experience_years|default:"Not provided" }}</p>
+                        {% if profile.profile_picture %}
+                            <p><strong>Profile Picture:</strong> <img src="{{ profile.profile_picture.url }}" alt="{{ profile_owner.username }}'s profile" class="profile-photo"></p>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,22 +1,63 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <h1 class="text-center mb-4">{{ user.role }} Profile</h1>
-            <form method="post" enctype="multipart/form-data" class="mt-4">
-                {% csrf_token %}
-                <div class="form-group">
-                    {{ user_form|crispy }}
+        <div class="col-md-8">
+            <h1 class="text-center mb-4">{{ user.role }} Profile: {{ user.username }}</h1>
+
+            {% if read_only %}
+                <!-- Read-Only Public View for Non-Admins -->
+                <div class="card dashboard-card">
+                    <div class="card-body">
+                        <h5 class="card-title">User Information</h5>
+                        <p><strong>Username:</strong> {{ user.username }}</p>
+                        <p><strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>Phone Number:</strong> {{ user.phone_number|default:"Not provided" }}</p>
+                        <p><strong>Role:</strong> {{ user.role }}</p>
+
+                        {% if user.role == 'farmer' and profile %}
+                            <h5 class="card-title mt-3">Farmer Details</h5>
+                            <p><strong>Location:</strong> {{ profile.location|default:"Not provided" }}</p>
+                            <p><strong>Crop Types:</strong> {{ profile.crop_types|default:"Not provided" }}</p>
+                            {% if profile.profile_picture %}
+                                <p><strong>Profile Picture:</strong> <img src="{{ profile.profile_picture.url }}" alt="{{ user.username }}'s profile" class="profile-photo"></p>
+                            {% endif %}
+                        {% elif user.role == 'agricultural_expert' and profile %}
+                            <h5 class="card-title mt-3">Expert Details</h5>
+                            <p><strong>Expertise:</strong> {{ profile.expertise|default:"Not provided" }}</p>
+                            <p><strong>Experience Years:</strong> {{ profile.experience_years|default:"Not provided" }}</p>
+                            {% if profile.profile_picture %}
+                                <p><strong>Profile Picture:</strong> <img src="{{ profile.profile_picture.url }}" alt="{{ user.username }}'s profile" class="profile-photo"></p>
+                            {% endif %}
+                        {% endif %}
+                    </div>
                 </div>
-                <div class="form-group">
-                    {{ profile_form|crispy }}
-                </div>
-                <div class="text-center">
-                    <button type="submit" class="btn btn-success">Save Changes</button>
-                </div>
-            </form>
+                <a href="{% url 'home' %}" class="btn btn-secondary mt-3">Back to Home</a>
+            {% else %}
+                <!-- Editable View for Admins -->
+                <form method="post" enctype="multipart/form-data" class="mt-4">
+                    {% csrf_token %}
+                    <div class="card dashboard-card">
+                        <div class="card-body">
+                            <h5 class="card-title">User Information</h5>
+                            {{ user_form|crispy }}
+                        </div>
+                    </div>
+                    <div class="card dashboard-card mt-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Profile Details</h5>
+                            {{ profile_form|crispy }}
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-success">Save Changes</button>
+                        <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            {% endif %}
         </div>
     </div>
 </div>

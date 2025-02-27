@@ -1,19 +1,130 @@
 {% extends 'base.html' %}
 
-{% block title %}Treatment Outcomes Report{% endblock %}
+{% block title %}Treatment Outcomes{% endblock %}
 
 {% block content %}
-    <h2>Treatment Outcomes Report</h2>
-    {% if outcomes %}
-        <ul>
-            {% for outcome in outcomes %}
-                <li>
-                    <strong>{{ outcome.pest.name }}</strong> - Treatment: {{ outcome.treatment_method }} ({{ outcome.effectiveness }}) on {{ outcome.date_applied }}
-                    <p>{{ outcome.notes }}</p>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No treatment outcomes reported.</p>
+    <h1 class="mb-4">Treatment Outcomes</h1>
+
+    {% if user.role == 'farmer' %}
+        <a href="{% url 'treatment_outcome_create' %}" class="btn btn-success mb-3">Report New Outcome</a>
     {% endif %}
+
+    {% if outcomes %}
+        <div class="card dashboard-card">
+            <div class="card-body">
+                <table class="table table-bordered table-hover">
+                    <thead style="background-color: #000; color: #fff;">
+                        <tr>
+                            <th>Pest</th>
+                            <th>Treatment Method</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Effectiveness</th>
+                            <th>Notes</th>
+                            {% if user.role == 'farmer' %}
+                                <th>Actions</th>
+                            {% else %}
+                                <th>Reported By</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for outcome in outcomes %}
+                            <tr>
+                                <td>{{ outcome.pest.name }}</td>
+                                <td>{{ outcome.treatment_method }}</td>
+                                <td>{{ outcome.date_applied }}</td>
+                                <td>{{ outcome.time_applied|default:"Unknown" }}</td>
+                                <td>{{ outcome.effectiveness }}</td>
+                                <td>{{ outcome.notes|default:"No notes" }}</td>
+                                {% if user.role == 'farmer' %}
+                                    <td>
+                                        <!-- Actions buttons -->
+                                        <div class="d-flex gap-2">
+                                            <a href="{% url 'treatment_outcome_edit' outcome.pk %}" class="btn btn-info btn-sm">Edit</a>
+                                            <button type="button" class="btn btn-danger btn-sm confirm-delete" data-outcome-id="{{ outcome.pk }}" data-item="{{ outcome.pest.name }} treatment by {{ outcome.user.username }}">Delete</button>
+                                        </div>
+                                    </td>
+                                {% else %}
+                                    <td>{{ outcome.user.username }} on {{ outcome.date_applied }} at {{ outcome.time_applied|default:"Unknown time" }}</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info">No treatment outcomes found.</div>
+    {% endif %}
+
+    <!-- Confirmation Modal for Delete -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete <strong id="deleteItem"></strong>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="deleteForm" method="post" action="">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteButtons = document.querySelectorAll('.confirm-delete');
+        const deleteForm = document.getElementById('deleteForm');
+        const deleteItem = document.getElementById('deleteItem');
+        let outcomeId = null;
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                outcomeId = this.getAttribute('data-outcome-id');
+                const item = this.getAttribute('data-item');
+                deleteItem.textContent = item;
+                deleteForm.action = `/reports/treatment-outcome/${outcomeId}/delete/`;
+                const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+                modal.show();
+            });
+        });
+
+        deleteForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            fetch(deleteForm.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: new URLSearchParams({
+                    'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload(); // Refresh the page after successful deletion
+                } else {
+                    alert('Failed to delete the report. Please try again.');
+                }
+            })
+            .catch(error => {
+                alert('An error occurred while deleting the report.');
+                console.error('Error:', error);
+            });
+        });
+    });
+</script>
 {% endblock %}

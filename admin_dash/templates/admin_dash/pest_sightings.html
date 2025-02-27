@@ -30,7 +30,7 @@
                             <td>{{ sighting.location }}</td>
                             <td>{{ sighting.date }}</td>
                             <td>
-                                <a href="{% url 'view_profile' sighting.user.pk %}" class="btn btn-info btn-sm">👁️ View Farmer</a>
+                                <a href="{% url 'public_profile' sighting.user.username %}" class="btn btn-info btn-sm">👁️ View Farmer</a>
                                 <a href="{% url 'admin_sighting_delete' sighting.pk %}" class="btn btn-danger btn-sm confirm-delete" data-item="{{ sighting.user.username }}'s sighting">🗑️ Delete</a>
                             </td>
                         </tr>

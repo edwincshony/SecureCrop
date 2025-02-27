@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -89,6 +89,26 @@ def profile(request):
         'user_form': user_form,
         'profile_form': profile_form
     })
+
+
+@login_required
+def public_profile(request, username):
+    profile_owner = get_object_or_404(CustomUser, username=username)
+
+    if profile_owner.role == 'farmer':
+        profile = profile_owner.farmer_profile
+    elif profile_owner.role == 'agricultural_expert':
+        profile = profile_owner.expert_profile
+    else:
+        profile = None
+
+    context = {
+        'profile_owner': profile_owner,
+        'profile': profile,
+    }
+    return render(request, 'accounts/public_profile.html', context)
+
+
 
 def logout_view(request):
     logout(request)
