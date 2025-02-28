@@ -1,52 +1,86 @@
 {% extends 'base.html' %}
-
 {% block title %}Expert Dashboard{% endblock %}
-
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-5 text-center fw-bold">Welcome, {{ request.user.username }} 😊</h1>
-
+    <h1 class="mb-5 text-center fw-bold text-primary">Welcome, {{ request.user.username }} 😊</h1>
     <!-- Dashboard Cards in 2x2 Grid -->
     <div class="row g-4">
         <!-- First Row -->
         <div class="col-md-6">
-            <div class="card h-100 border-0 shadow-sm" style="border-radius: 8px;">
-                <div class="card-body p-4 text-center">
-                    <h5 class="card-title mb-3 fw-semibold">Advisory Requests</h5>
-                    <p class="card-text text-muted">Respond to farmers' advisory requests.</p>
-                    <a href="{% url 'all_advisory_requests' %}" class="btn btn-primary mt-3" style="border-radius: 4px;">View Requests</a>
+            <div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; transition: transform 0.3s;">
+                <div class="card-body p-4 text-center d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="card-title mb-3 fw-semibold text-dark">Advisory Requests</h5>
+                        <p class="card-text text-muted">Respond to farmers' advisory requests.</p>
+                    </div>
+                    <a href="{% url 'all_advisory_requests' %}" class="btn btn-primary mt-3 w-75 mx-auto" style="border-radius: 6px;">View Requests</a>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card h-100 border-0 shadow-sm" style="border-radius: 8px;">
-                <div class="card-body p-4 text-center">
-                    <h5 class="card-title mb-3 fw-semibold">Pest Sightings</h5>
-                    <p class="card-text text-muted">Monitor recent pest sightings reported by farmers.</p>
-                    <a href="{% url 'pest_infestations' %}" class="btn btn-primary mt-3" style="border-radius: 4px;">View Sightings</a>
+            <div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; transition: transform 0.3s;">
+                <div class="card-body p-4 text-center d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="card-title mb-3 fw-semibold text-dark">Pest Sightings</h5>
+                        <p class="card-text text-muted">Monitor recent pest sightings reported by farmers.</p>
+                    </div>
+                    <a href="{% url 'pest_infestations' %}" class="btn btn-primary mt-3 w-75 mx-auto" style="border-radius: 6px;">View Sightings</a>
                 </div>
             </div>
         </div>
-
         <!-- Second Row -->
         <div class="col-md-6">
-            <div class="card h-100 border-0 shadow-sm" style="border-radius: 8px;">
-                <div class="card-body p-4 text-center">
-                    <h5 class="card-title mb-3 fw-semibold">Treatment Outcomes</h5>
-                    <p class="card-text text-muted">Review treatment outcomes submitted by farmers.</p>
-                    <a href="{% url 'treatment_outcomes' %}" class="btn btn-primary mt-3" style="border-radius: 4px;">View Outcomes</a>
+            <div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; transition: transform 0.3s;">
+                <div class="card-body p-4 text-center d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="card-title mb-3 fw-semibold text-dark">Treatment Outcomes</h5>
+                        <p class="card-text text-muted">Review treatment outcomes submitted by farmers.</p>
+                    </div>
+                    <a href="{% url 'treatment_outcomes' %}" class="btn btn-primary mt-3 w-75 mx-auto" style="border-radius: 6px;">View Outcomes</a>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card h-100 border-0 shadow-sm" style="border-radius: 8px;">
-                <div class="card-body p-4 text-center">
-                    <h5 class="card-title mb-3 fw-semibold">Pest/Weed Database</h5>
-                    <p class="card-text text-muted">Manage pest and weed records.</p>
-                    <a href="{% url 'manage_database' %}" class="btn btn-primary mt-3" style="border-radius: 4px;">Manage Database</a>
+            <div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; transition: transform 0.3s;">
+                <div class="card-body p-4 text-center d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="card-title mb-3 fw-semibold text-dark">Pest/Weed Database</h5>
+                        <p class="card-text text-muted">Manage pest and weed records.</p>
+                    </div>
+                    <a href="{% url 'manage_database' %}" class="btn btn-primary mt-3 w-75 mx-auto" style="border-radius: 6px;">Manage Database</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Profile Card (Full Width Below) -->
+    <div class="row g-4 mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg" style="border-radius: 12px; transition: transform 0.3s;">
+                <div class="card-header bg-primary text-white text-uppercase text-center" style="border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                    <h6 class="mb-0 fw-bold">Profile</h6>
+                </div>
+                <div class="card-body p-4 text-center d-flex flex-column justify-content-between">
+                    <p class="text-muted mb-4">Manage your user profile and settings.</p>
+                    <a href="{% url 'user_list' %}" class="btn btn-primary w-50 mx-auto" style="border-radius: 6px;">View Profile</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        transition: background-color 0.3s;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+</style>
 {% endblock %}

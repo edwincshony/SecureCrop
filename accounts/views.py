@@ -108,7 +108,23 @@ def public_profile(request, username):
     }
     return render(request, 'accounts/public_profile.html', context)
 
+def user_list(request):
+    # Get only approved users: is_active=True and userapproval.status='approved'
+    users = CustomUser.objects.filter(
+        is_active=True,
+        userapproval__status='approved'
+    ).order_by('username')
+    
+    # Get the role filter from the query string (e.g., ?role=farmer)
+    role_filter = request.GET.get('role', '')
+    if role_filter in ['farmer', 'agricultural_expert']:
+        users = users.filter(role=role_filter)
 
+    context = {
+        'users': users,
+        'selected_role': role_filter,  # To highlight the active filter
+    }
+    return render(request, 'accounts/user_list.html', context)
 
 def logout_view(request):
     logout(request)

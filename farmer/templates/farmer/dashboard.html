@@ -4,18 +4,19 @@
 {% block content %}
 <div class="container py-5 text-center">
     <h1 class="mb-4 text-primary fw-bold">Welcome, {{ request.user.username }}!</h1>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="row row-cols-1 row-cols-md-2 g-4">
         <!-- Pest Sightings Card -->
         <div class="col">
             <div class="card h-100 border-0 shadow-lg">
                 <div class="card-header bg-success text-white text-uppercase">
                     <h6 class="mb-0">Recent Pest Sightings</h6>
                 </div>
-                <div class="card-body">
+                <div class="card-body d-flex flex-column justify-content-between">
                     <p class="text-muted">Track and report pest sightings in your fields.</p>
-                    <a href="{% url 'pest_sighting_create' %}" class="btn btn-success w-100">Report New</a><br><br>
-                    <a href="{% url 'pest_infestations' %}" class="btn btn-success w-100">View Pest Sightings</a>
-
+                    <div>
+                        <a href="{% url 'pest_sighting_create' %}" class="btn btn-success w-100 mb-2">Report New</a>
+                        <a href="{% url 'pest_infestations' %}" class="btn btn-success w-100">View Pest Sightings</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -25,10 +26,12 @@
                 <div class="card-header bg-info text-white text-uppercase">
                     <h6 class="mb-0">Recent Treatments</h6>
                 </div>
-                <div class="card-body">
+                <div class="card-body d-flex flex-column justify-content-between">
                     <p class="text-muted">Monitor and report treatment effectiveness.</p>
-                    <a href="{% url 'treatment_outcome_create' %}" class="btn btn-info w-100">Report New</a><br><br>
-                    <a href="{% url 'treatment_outcomes' %}" class="btn btn-info w-100">View Treatment Outcomes</a>
+                    <div>
+                        <a href="{% url 'treatment_outcome_create' %}" class="btn btn-info w-100 mb-2">Report New</a>
+                        <a href="{% url 'treatment_outcomes' %}" class="btn btn-info w-100">View Treatment Outcomes</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -38,9 +41,25 @@
                 <div class="card-header bg-warning text-dark text-uppercase">
                     <h6 class="mb-0">Advisory Requests</h6>
                 </div>
-                <div class="card-body">
+                <div class="card-body d-flex flex-column justify-content-between">
                     <p class="text-muted">Seek expert advice on field management.</p>
-                    <a href="{% url 'advisory_requests_page' %}" class="btn btn-warning text-dark w-100">View Details</a>
+                    <div>
+                        <a href="{% url 'advisory_requests_page' %}" class="btn btn-warning text-dark w-100">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Profile Card -->
+        <div class="col">
+            <div class="card h-100 border-0 shadow-lg">
+                <div class="card-header bg-primary text-white text-uppercase">
+                    <h6 class="mb-0">Profile</h6>
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <p class="text-muted">Manage your user profile and settings.</p>
+                    <div>
+                        <a href="{% url 'user_list' %}" class="btn btn-primary w-100">View Profile</a>
+                    </div>
                 </div>
             </div>
         </div>
