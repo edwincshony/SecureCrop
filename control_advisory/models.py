@@ -7,10 +7,9 @@ class AdvisoryRequest(models.Model):
         ('weed', 'Weed'),
     ]
     STATUS_CHOICES = [
-    ('open', 'Open'),
-    ('closed', 'Closed'),
-]
-
+        ('pending', 'Pending'),
+        ('responded', 'Responded'),
+    ]
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='advisory_requests')
     crop_type = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
@@ -24,12 +23,3 @@ class AdvisoryRequest(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.crop_type} ({self.issue_type}) - {self.status}"
-    
-class AdvisoryResponse(models.Model):
-    advisory_request = models.ForeignKey(AdvisoryRequest, on_delete=models.CASCADE, related_name='responses')
-    expert = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='expert_responses')
-    recommendation = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Response by {self.expert.username} on {self.advisory_request.crop_type}"

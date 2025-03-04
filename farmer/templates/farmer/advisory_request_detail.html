@@ -9,7 +9,6 @@
             <p><strong>Crop Type:</strong> {{ advisory_request.crop_type }}</p>
             <p><strong>Issue Type:</strong> {{ advisory_request.issue_type }}</p>
             <p><strong>Description:</strong> {{ advisory_request.description }}</p>
-            <p><strong>Status:</strong> <span class="badge bg-info">{{ advisory_request.status }}</span></p>
             <p><strong>Submitted on:</strong> {{ advisory_request.created_at|date:"M d, Y H:i A" }}</p>
 
             {% if advisory_request.response %}

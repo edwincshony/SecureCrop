@@ -106,35 +106,7 @@ def advisory_request_detail(request, request_id):
 def edit_advisory_request(request, pk):
     advisory_request = get_object_or_404(AdvisoryRequest, id=pk, user=request.user)
     
-    # Ensure the request is still pending
-    if advisory_request.status != 'pending':
-        messages.error(request, "You cannot edit a request that has already been responded to.")
-        return redirect('advisory_requests_page')
-
-    if request.method == 'POST':
-        form = AdvisoryForm(request.POST, instance=advisory_request)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Your advisory request has been updated successfully.")
-            return redirect('advisory_requests_page')
-    else:
-        form = AdvisoryForm(instance=advisory_request)
-
-    context = {
-        'form': form,
-        'advisory_request': advisory_request,
-    }
-    return render(request, 'farmer/edit_advisory_request.html', context)
-
-
-@login_required
-def edit_advisory_request(request, pk):
-    advisory_request = get_object_or_404(AdvisoryRequest, id=pk, user=request.user)
     
-    # Ensure the request is still pending
-    if advisory_request.status != 'pending':
-        messages.error(request, "You cannot edit a request that has already been responded to.")
-        return redirect('advisory_requests_page')
 
     if request.method == 'POST':
         form = AdvisoryForm(request.POST, instance=advisory_request)
@@ -161,12 +133,7 @@ def delete_advisory_request(request, pk):
     # Fetch the advisory request by ID and ensure it belongs to the logged-in user
     advisory_request = get_object_or_404(AdvisoryRequest, id=pk, user=request.user)
     
-    # Check if the request is still pending
-    if advisory_request.status != 'pending':
-        # Show an error message if the request has already been responded to
-        messages.error(request, "You cannot delete a request that has already been responded to.")
-        return redirect('advisory_requests_page')
-
+ 
     # Handle POST request for deletion
     if request.method == 'POST':
         advisory_request.delete()  # Delete the advisory request from the database

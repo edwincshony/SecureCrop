@@ -51,8 +51,8 @@ def all_advisory_requests(request):
         messages.error(request, "Only agricultural experts can access this page.")
         return redirect('login')
 
-    # Fetch all pending advisory requests
-    advisory_requests = AdvisoryRequest.objects.filter(status='pending').order_by('-created_at')
+    # Fetch all advisory requests (not just pending)
+    advisory_requests = AdvisoryRequest.objects.all().order_by('-created_at')
     context = {
         'advisory_requests': advisory_requests,
     }
@@ -62,25 +62,28 @@ def all_advisory_requests(request):
 def respond_advisory(request, pk):
     if request.user.role != 'agricultural_expert':
         return redirect('login')
-    advisory_request = get_object_or_404(AdvisoryRequest, pk=pk, status='pending')
+    advisory_request = get_object_or_404(AdvisoryRequest, pk=pk)  # Remove status='pending' filter
+    
     if request.method == 'POST':
         form = RecommendationForm(request.POST, instance=advisory_request)
         if form.is_valid():
             advisory_request = form.save(commit=False)
-            advisory_request.status = 'responded'
+            if advisory_request.status == 'pending':
+                advisory_request.status = 'responded'  # Only change to 'responded' if it was 'pending'
             advisory_request.responded_by = request.user
             advisory_request.save()
             # Notify the farmer
             Notification.objects.create(
                 user=advisory_request.user,
-                title=f"Recommendation for {advisory_request.crop_type}",
-                message=f"An expert has provided a recommendation for your {advisory_request.issue_type} issue.",
+                title=f"Update for {advisory_request.crop_type}",
+                message=f"An expert has {'responded to' if advisory_request.status == 'pending' else 'updated'} your {advisory_request.issue_type} issue.",
                 url=f"/farmer/advisory-responses/"
             )
             messages.success(request, "Recommendation sent to the farmer.")
             return redirect('expert_dashboard')
     else:
         form = RecommendationForm(instance=advisory_request)
+    
     return render(request, 'agricultural_expert/respond_advisory.html', {
         'form': form,
         'advisory_request': advisory_request,
