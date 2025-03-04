@@ -63,6 +63,8 @@
                                             </button>
                                             {% if sighting.pest_name %}
                                                 <a href="{% url 'expert_response_detail' sighting.pk %}" class="btn btn-info btn-sm">View Expert Response</a>
+                                                <a href="{% url 'treatment_outcome_create_from_sighting' sighting.crop.id sighting.pest_name %}" 
+                                                   class="btn btn-success btn-sm">Report Treatment Outcome</a>
                                             {% endif %}
                                         {% endif %}
                                     </td>

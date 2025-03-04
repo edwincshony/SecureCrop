@@ -1,4 +1,5 @@
 from django import forms
+from .models import AdvisoryResponse
 from .models import AdvisoryRequest
 
 class AdvisoryForm(forms.ModelForm):
@@ -17,7 +18,7 @@ class AdvisoryForm(forms.ModelForm):
 
 class RecommendationForm(forms.ModelForm):
     class Meta:
-        model = AdvisoryRequest
+        model = AdvisoryResponse
         fields = ['recommendation']
         widgets = {
             'recommendation': forms.Textarea,

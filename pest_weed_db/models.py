@@ -1,7 +1,7 @@
 from django.db import models
 
 class Pest(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     scientific_name = models.CharField(max_length=100, blank=True)
     description = models.TextField()
     symptoms = models.TextField()

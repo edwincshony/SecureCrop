@@ -36,25 +36,19 @@
                                     <h5 class="card-title text-muted mb-2">Control Measures</h5>
                                     <p class="card-text mb-3">{{ pest.control_measures }}</p>
                                 </div>
-                                {% if user.role == "agricultural_expert" %}
-                                <div class="mt-auto pt-3 d-flex gap-2">
-                                    <a href="{% url 'pest_edit' pest.pk %}" 
-                                       class="btn btn-primary">
-                                        Edit Pest
+                                <div class="mt-auto pt-3 d-flex justify-content-between gap-2">
+                                    <a href="{% url 'pest_list' %}" class="btn btn-secondary">
+                                        Back to List
                                     </a>
-                                   
-                                    <button type="button" 
-                                            class="btn btn-danger"
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#deleteModal">
-                                        Delete Pest
-                                    </button>
+                                    {% if user.role == "agricultural_expert" %}
+                                        <a href="{% url 'pest_edit' pest.pk %}" class="btn btn-primary">
+                                            Edit Pest
+                                        </a>
+                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                            Delete Pest
+                                        </button>
+                                    {% endif %}
                                 </div>
-                                {% endif %}
-                                <a href="{% url 'pest_list' %}" 
-                                class="btn btn-secondary">
-                                 Back to List
-                             </a>
                             </div>
                         </div>
                     </div>

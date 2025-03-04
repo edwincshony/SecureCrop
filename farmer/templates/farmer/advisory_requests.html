@@ -44,8 +44,10 @@
                     {% for request in advisory_requests %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
-                                <strong>{{ request.crop_type }} ({{ request.issue_type }})</strong><br>
-                                <small class="text-muted">{{ request.status }} - {{ request.created_at|date:"M d, Y" }}</small>
+                                <a href="{% url 'advisory_request_detail' request.id %}" class="text-decoration-none text-dark fw-bold">
+                                    {{ request.crop_type }} ({{ request.issue_type }})
+                                </a>
+                                                                <small class="text-muted">{{ request.status }} - {{ request.created_at|date:"M d, Y" }}</small>
                             </div>
                             {% if request.status == 'pending' %}
                                 <div>
@@ -63,9 +65,7 @@
             {% else %}
                 <p class="text-center text-muted">No recent requests.</p>
             {% endif %}
-            <a href="{% url 'advisory_responses' %}" class="btn btn-success w-100 mt-3">
-                <i class="fas fa-eye me-2"></i> View Responses
-            </a>
+            
         </div>
     </div>
 </div>

@@ -17,4 +17,18 @@
             </form>
         </div>
     </div>
+
+    <!-- Add JavaScript to ensure disabled fields are submitted -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function() {
+                // Re-enable disabled fields just before submission to ensure their values are sent
+                const disabledFields = form.querySelectorAll('select[disabled]');
+                disabledFields.forEach(field => {
+                    field.removeAttribute('disabled');
+                });
+            });
+        });
+    </script>
 {% endblock %}
