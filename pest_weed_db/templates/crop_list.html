@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Crop List{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <h2 class="mb-0 fw-bold">Crop Database</h2>
+        {% if user.is_authenticated and user.is_superuser or user.role == 'agricultural_expert' %}
+            <a href="{% url 'crop_create' %}" class="btn btn-success">Add New Crop</a>
+        {% endif %}
+    </div>
+
+    <form id="searchForm" class="mb-5">
+        <div class="input-group w-50 mx-auto">
+            <input type="text" id="searchInput" name="q" value="{{ query }}" class="form-control" placeholder="Search crops..." aria-label="Search crops">
+        </div>
+    </form>
+
+    <div id="cropList" class="row row-cols-1 row-cols-md-3 g-4">
+        {% for crop in crops %}
+            <div class="col crop-card" data-name="{{ crop.name|lower }}">
+                <div class="card h-100 shadow-sm border-0">
+                    {% if crop.image %}
+                        <img src="{{ crop.image.url }}" class="card-img-top" alt="{{ crop.name }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <span class="text-muted">No image</span>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title fw-semibold">{{ crop.name }}</h5>
+                        <p class="card-text text-muted">{{ crop.description|truncatewords:10 }}</p>
+                    </div>
+                    <div class="card-footer bg-white border-top-0">
+                        <a href="{% url 'crop_detail' crop.pk %}" class="btn btn-primary w-100">View Details</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-warning text-center" role="alert">
+                    No crops found.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('searchInput');
+    const cropCards = document.querySelectorAll('.crop-card');
+
+    searchInput.addEventListener('input', function () {
+        const query = searchInput.value.trim().toLowerCase();
+        cropCards.forEach(card => {
+            const cropName = card.getAttribute('data-name');
+            if (cropName.includes(query)) {
+                card.style.display = ''; 
+            } else {
+                card.style.display = 'none'; 
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

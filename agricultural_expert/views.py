@@ -89,7 +89,17 @@ def respond_advisory(request, pk):
 
 @login_required
 def manage_database(request):
-    if request.user.role != 'agricultural_expert':
-        messages.error(request, "Only agricultural experts can access this page.")
+    # Check user role
+    if request.user.role not in ['agricultural_expert', 'farmer']:
+        messages.error(request, "You do not have permission to access this page.")
         return redirect('login')
-    return render(request, 'agricultural_expert/manage_database.html')
+
+    # Determine if the user is an expert (for edit/add/delete permissions)
+    is_expert = request.user.role == 'agricultural_expert'
+
+    # Pass context to the template
+    context = {
+        'is_expert': is_expert,
+        # Add your pest/weed data here, e.g., Pest.objects.all() if you have a Pest model
+    }
+    return render(request, 'agricultural_expert/manage_database.html', context)

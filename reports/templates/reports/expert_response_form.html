@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Expert Response - Pest Sighting{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Expert Response for Pest Sighting</h1>
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Sighting Details</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Reported by:</strong> {{ object.user.username }}</p>
+            <p><strong>Crop:</strong> {{ object.crop.name|default:"Not specified" }}</p>
+            <p><strong>Location:</strong> {{ object.location }}</p>
+            <p><strong>Date:</strong> {{ object.date }}</p>
+            <p><strong>Time:</strong> {{ object.time|default:"Unknown" }}</p>
+            <p><strong>Notes:</strong> {{ object.notes|default:"No notes provided" }}</p>
+        </div>
+    </div>
+
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        {{ form|crispy }}
+
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Submit Response</button>
+            <a href="{% url 'pest_infestations' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card {
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}

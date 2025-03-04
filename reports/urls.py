@@ -1,4 +1,6 @@
 from django.urls import path
+from . import views
+from .views import ExpertResponseView
 from .views import (
     PestSightingCreateView,
     TreatmentOutcomeCreateView,
@@ -20,4 +22,8 @@ urlpatterns = [
     path('pest-sighting/<int:pk>/delete/', PestSightingDeleteView.as_view(), name='pest_sighting_delete'),
     path('treatment-outcome/<int:pk>/edit/', TreatmentOutcomeUpdateView.as_view(), name='treatment_outcome_edit'),
     path('treatment-outcome/<int:pk>/delete/', TreatmentOutcomeDeleteView.as_view(), name='treatment_outcome_delete'),
+    path('pest-sighting/<int:pk>/respond/', ExpertResponseView.as_view(), name='expert_response'),
+    path('expert-response-detail/<int:pk>/', views.ExpertResponseDetailView.as_view(), name='expert_response_detail'),
+
+
 ]

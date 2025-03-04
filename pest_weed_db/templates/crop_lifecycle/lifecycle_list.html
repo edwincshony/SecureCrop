@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+  <h2 class="text-center text-success mb-4">Your Crop Lifecycle Journey</h2>
+  
+  <!-- Crop Filter Form -->
+  <div class="row mb-4">
+    <div class="col-md-6 offset-md-3">
+      <form method="get" id="cropFilterForm" class="d-flex gap-2">
+        <select name="crop" class="form-select" id="cropSelect">
+          <option value="">All Crops</option>
+          {% for crop in available_crops %}
+            <option value="{{ crop }}" {% if selected_crop == crop %}selected{% endif %}>{{ crop }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">Filter</button>
+      </form>
+    </div>
+  </div>
+
+  {% if grouped_lifecycles %}
+    <div class="accordion shadow-sm rounded" id="lifecycleAccordion">
+      {% for group, events in grouped_lifecycles.items %}
+        {% with crop=group.0 stage=group.1 %}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="heading-{{ forloop.counter }}">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse-{{ forloop.counter }}">
+                <span class="accordion-icon"></span>
+                <strong>{{ crop }} - {{ events.0.get_stage_display }}</strong>
+              </button>
+            </h2>
+            <div id="collapse-{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ forloop.counter }}" data-bs-parent="#lifecycleAccordion">
+              <div class="accordion-body">
+                {% for event in events %}
+                  <div class="event-item" id="event-{{ event.pk }}">
+                    <p class="mb-3">
+                      <strong>{{ event.date|date:"F j, Y" }}</strong>: 
+                      {% if event.description %}
+                        {{ event.description }}
+                      {% else %}
+                        <em class="text-muted">No notes added for this milestone.</em>
+                      {% endif %}
+                    </p>
+                    {% if request.user == event.user or request.user.role in "farmer,agricultural_expert" or request.user.is_superuser %}
+                      <div class="d-flex gap-2">
+                        <a href="{% url 'crop_lifecycle_edit' event.pk %}" class="btn btn-sm btn-primary">Edit</a>
+                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal" data-delete-url="{% url 'crop_lifecycle_delete' event.pk %}">
+                          Delete
+                        </button>
+                      </div>
+                    {% endif %}
+                    <hr>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        {% endwith %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-warning text-center rounded-pill shadow-sm" role="alert">
+      {% if selected_crop %}
+        No lifecycle events recorded for {{ selected_crop }} yet.
+      {% else %}
+        No lifecycle events recorded yet. Begin your elegant journey now!
+      {% endif %}
+    </div>
+  {% endif %}
+  <div class="text-center mt-5">
+    <a href="{% url 'crop_lifecycle_create' %}" class="btn btn-success">Add a Milestone</a>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this milestone? This action cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form id="deleteForm" method="POST" action="">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS and Custom Script -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Fix for delete confirmation modal
+    var deleteConfirmationModal = document.getElementById('deleteConfirmationModal');
+    if (deleteConfirmationModal) {
+      deleteConfirmationModal.addEventListener('show.bs.modal', function(event) {
+        var button = event.relatedTarget;
+        var deleteUrl = button.getAttribute('data-delete-url');
+        document.getElementById('deleteForm').action = deleteUrl;
+      });
+    }
+    
+    // Fix for dropdown in the filter form
+    var cropSelect = document.getElementById('cropSelect');
+    if (cropSelect) {
+      cropSelect.addEventListener('change', function() {
+        document.getElementById('cropFilterForm').submit();
+      });
+    }
+  });
+</script>
+
+<style>
+  /* Remove Bootstrap's default arrow */
+  .accordion-button::after {
+    display: none !important;
+  }
+
+  /* Style for the custom icon */
+  .accordion-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  /* Plus icon when collapsed */
+  .accordion-button.collapsed .accordion-icon::before {
+    content: "+";
+  }
+
+  /* Minus icon when expanded */
+  .accordion-button:not(.collapsed) .accordion-icon::before {
+    content: "-";
+  }
+</style>
+{% endblock %}

@@ -27,11 +27,17 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center p-4">
+                    <h5 class="card-title text-primary fw-semibold">View Crop List</h5>
+                    <p class="card-text text-muted">Browse the list of all crops.</p>
+                    <a href="{% url 'crop_list' %}" class="btn btn-primary">View Weeds</a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Back Button -->
-    <div class="text-center mt-5">
-        <a href="{% url 'expert_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
-    </div>
+    
 </div>
 {% endblock %}

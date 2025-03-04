@@ -91,6 +91,16 @@ def advisory_requests_page(request):
     }
     return render(request, 'farmer/advisory_requests.html', context)
 
+@login_required
+def advisory_request_detail(request, request_id):
+    advisory_request = get_object_or_404(AdvisoryRequest, id=request_id, user=request.user)
+    
+    context = {
+        'advisory_request': advisory_request
+    }
+    return render(request, 'farmer/advisory_request_detail.html', context)
+
+
 
 @login_required
 def edit_advisory_request(request, pk):

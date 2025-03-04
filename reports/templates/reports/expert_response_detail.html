@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Expert Response - Pest Sighting{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="mb-4 text-primary">Expert Response for Pest Sighting</h1>
+
+        <!-- Sighting Details Card -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Sighting Details</h5>
+                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#sightingDetails">
+                    Toggle Details
+                </button>
+            </div>
+            <div id="sightingDetails" class="card-body collapse show">
+                <p><strong>Crop:</strong> {{ sighting.crop.name|default:"Not specified" }}</p>
+                <p><strong>Location:</strong> {{ sighting.location }}</p>
+                <p><strong>Date & Time:</strong> {{ sighting.date }} at {{ sighting.time|default:"Unknown" }}</p>
+                <p><strong>Notes:</strong> {{ sighting.notes|default:"No notes provided" }}</p>
+            </div>
+        </div>
+
+        <!-- Expert Response Card -->
+        <div class="card mt-3">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Expert Response</h5>
+                <button class="btn btn-sm btn-outline-success" data-bs-toggle="collapse" data-bs-target="#expertResponse">
+                    Toggle Response
+                </button>
+            </div>
+            <div id="expertResponse" class="card-body collapse show">
+                {% if sighting.pest_name %}
+                    <div class="alert alert-success">
+                        <strong>Pest Identified:</strong> {{ sighting.pest_name }}
+                    </div>
+                    <p><strong>Confirmation:</strong> 
+                        <span class="badge bg-{% if sighting.identification_confirmation %}success{% else %}danger{% endif %}">
+                            {{ sighting.identification_confirmation|yesno:"Confirmed, Not Confirmed" }}
+                        </span>
+                    </p>
+                    <p><strong>Symptoms Recap:</strong> {{ sighting.symptoms_recap|default:"Not specified" }}</p>
+                    <p><strong>Control Measures:</strong> {{ sighting.control_measures|default:"Not specified" }}</p>
+                    <p><strong>Next Steps:</strong> {{ sighting.next_steps|default:"Not specified" }}</p>
+                    <p><strong>Educational Tip:</strong> <em>{{ sighting.educational_nugget|default:"None" }}</em></p>
+                    
+                {% else %}
+                    <div class="alert alert-warning text-center">
+                        No expert response provided yet.
+                    </div>
+                    {% if user.is_expert %}
+                        <a href="{% url 'add_expert_response' sighting.id %}" class="btn btn-primary">
+                            Provide Expert Response
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="d-flex justify-content-end mt-3">
+            <a href="{% url 'pest_infestations' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Pest Infestations
+            </a>
+        </div>
+    </div>
+{% endblock %}

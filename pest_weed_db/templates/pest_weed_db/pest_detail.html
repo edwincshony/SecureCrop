@@ -5,14 +5,12 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <!-- Main Pest Card -->
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-success text-white text-center py-3">
                     <h2 class="mb-0">{{ pest.name }}</h2>
                 </div>
                 <div class="card-body p-4">
                     <div class="row g-4">
-                        <!-- Image Section -->
                         <div class="col-md-4 d-flex align-items-center justify-content-center">
                             {% if pest.image %}
                                 <img src="{{ pest.image.url }}" 
@@ -23,7 +21,6 @@
                                 <div class="text-muted fst-italic">No image available</div>
                             {% endif %}
                         </div>
-                        <!-- Details Section -->
                         <div class="col-md-8">
                             <div class="d-flex flex-column h-100">
                                 <div>
@@ -39,16 +36,13 @@
                                     <h5 class="card-title text-muted mb-2">Control Measures</h5>
                                     <p class="card-text mb-3">{{ pest.control_measures }}</p>
                                 </div>
-                                <!-- Action Buttons -->
+                                {% if user.role == "agricultural_expert" %}
                                 <div class="mt-auto pt-3 d-flex gap-2">
                                     <a href="{% url 'pest_edit' pest.pk %}" 
                                        class="btn btn-primary">
                                         Edit Pest
                                     </a>
-                                    <a href="{% url 'pest_list' %}" 
-                                       class="btn btn-secondary">
-                                        Back to List
-                                    </a>
+                                   
                                     <button type="button" 
                                             class="btn btn-danger"
                                             data-bs-toggle="modal" 
@@ -56,6 +50,11 @@
                                         Delete Pest
                                     </button>
                                 </div>
+                                {% endif %}
+                                <a href="{% url 'pest_list' %}" 
+                                class="btn btn-secondary">
+                                 Back to List
+                             </a>
                             </div>
                         </div>
                     </div>
@@ -65,6 +64,7 @@
     </div>
 </div>
 
+{% if user.role == "agricultural_expert" %}
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -80,11 +80,11 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <form method="post" action="{% url 'pest_delete' pest.pk %}" style="display: inline;">
                     {% csrf_token %}
-                    <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+{% endif %}
 {% endblock %}

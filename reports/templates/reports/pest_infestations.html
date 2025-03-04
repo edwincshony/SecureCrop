@@ -9,39 +9,63 @@
         <a href="{% url 'pest_sighting_create' %}" class="btn btn-success mb-3">Report New Sighting</a>
     {% endif %}
 
+    <!-- Crop Filter Form -->
+    <form method="get" class="mb-4" id="cropFilterForm">
+        <div class="row">
+            <div class="col-md-4">
+                <select name="crop" class="form-select" id="cropSelect">
+                    <option value="">All Crops</option>
+                    {% for crop in crops %}
+                        <option value="{{ crop.id }}" {% if selected_crop == crop.id|stringformat:"s" %}selected{% endif %}>
+                            {{ crop.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </form>
+
     {% if sightings %}
         <div class="card dashboard-card">
             <div class="card-body">
                 <table class="table table-bordered table-hover">
                     <thead style="background-color: #000; color: #fff;">
                         <tr>
-                            <th>Pest</th>
+                            <th>Crop</th>
                             <th>Location</th>
                             <th>Date</th>
                             <th>Time</th>
                             <th>Notes</th>
-                            {% if user.role == 'farmer' %}
+                            {% if user.role == 'agricultural_expert' or user.role == 'farmer' %}
                                 <th>Actions</th>
-                            {% else %}
-                                <th>Reported By</th>
                             {% endif %}
                         </tr>
                     </thead>
                     <tbody>
                         {% for sighting in sightings %}
                             <tr>
-                                <td>{{ sighting.pest.name }}</td>
+                                <td>{{ sighting.crop.name|default:"Not specified" }}</td>
                                 <td>{{ sighting.location }}</td>
                                 <td>{{ sighting.date }}</td>
                                 <td>{{ sighting.time|default:"Unknown" }}</td>
                                 <td>{{ sighting.notes|default:"No notes" }}</td>
-                                {% if user.role == 'farmer' %}
+                                {% if user.role == 'agricultural_expert' or user.role == 'farmer' %}
                                     <td>
-                                        <a href="{% url 'pest_sighting_edit' sighting.pk %}" class="btn btn-info btn-sm">Edit</a>
-                                        <button type="button" class="btn btn-danger btn-sm confirm-delete" data-sighting-id="{{ sighting.pk }}" data-item="{{ sighting.pest.name }} sighting by {{ sighting.user.username }}">Delete</button>
+                                        {% if user.role == 'agricultural_expert' %}
+                                            <a href="{% url 'expert_response' sighting.pk %}" class="btn btn-primary btn-sm">Respond</a>
+                                        {% endif %}
+                                        {% if user.role == 'farmer' and user == sighting.user %}
+                                            <a href="{% url 'pest_sighting_edit' sighting.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                                            <button class="btn btn-danger btn-sm confirm-delete" 
+                                                    data-sighting-id="{{ sighting.pk }}"
+                                                    data-item="Pest Sighting from {{ sighting.date }}">
+                                                Delete
+                                            </button>
+                                            {% if sighting.pest_name %}
+                                                <a href="{% url 'expert_response_detail' sighting.pk %}" class="btn btn-info btn-sm">View Expert Response</a>
+                                            {% endif %}
+                                        {% endif %}
                                     </td>
-                                {% else %}
-                                    <td>{{ sighting.user.username }} on {{ sighting.date }} at {{ sighting.time|default:"Unknown time" }}</td>
                                 {% endif %}
                             </tr>
                         {% endfor %}
@@ -79,18 +103,26 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Auto-submit form on crop selection change
+        const cropSelect = document.getElementById('cropSelect');
+        const cropFilterForm = document.getElementById('cropFilterForm');
+        
+        cropSelect.addEventListener('change', function() {
+            cropFilterForm.submit();
+        });
+
+        // Existing delete functionality
         const deleteButtons = document.querySelectorAll('.confirm-delete');
         const deleteForm = document.getElementById('deleteForm');
         const deleteItem = document.getElementById('deleteItem');
-        let sightingId = null;
 
         deleteButtons.forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
-                sightingId = this.getAttribute('data-sighting-id');
+                const sightingId = this.getAttribute('data-sighting-id');
                 const item = this.getAttribute('data-item');
                 deleteItem.textContent = item;
-                deleteForm.action = `/reports/pest-sighting/${sightingId}/delete/`;
+                deleteForm.action = `{% url 'pest_sighting_delete' 0 %}`.replace('0', sightingId);
                 const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
                 modal.show();
             });
@@ -101,7 +133,6 @@
             fetch(deleteForm.action, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
                     'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
                 },
                 body: new URLSearchParams({
@@ -110,7 +141,7 @@
             })
             .then(response => {
                 if (response.ok) {
-                    window.location.reload(); // Refresh the page after successful deletion
+                    window.location.reload();
                 } else {
                     alert('Failed to delete the report. Please try again.');
                 }

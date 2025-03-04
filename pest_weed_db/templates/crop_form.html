@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}{% if object %}Edit Crop{% else %}Add Crop{% endif %}{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2>{% if object %}Edit Crop{% else %}Add New Crop{% endif %}</h2>
+    <div class="card shadow-sm border-0 p-4">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-success">Save</button>
+            {% if object %}
+                <a href="{% url 'crop_detail' object.pk %}" class="btn btn-secondary">Cancel</a>
+            {% else %}
+                <a href="{% url 'crop_list' %}" class="btn btn-secondary">Cancel</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}{{ weed.name }} - weed Details{% endblock %}
+
+{% block title %}{{ weed.name }} - Weed Details{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <!-- Main weed Card -->
+            <!-- Main Weed Card -->
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-success text-white text-center py-3">
                     <h2 class="mb-0">{{ weed.name }}</h2>
@@ -39,23 +41,21 @@
                                     <h5 class="card-title text-muted mb-2">Control Measures</h5>
                                     <p class="card-text mb-3">{{ weed.control_measures }}</p>
                                 </div>
-                                <!-- Action Buttons -->
+
+                                <!-- Action Buttons (Only for Experts or Admins) -->
+                                {% if user.role == "agricultural_expert" or user.is_superuser %}
                                 <div class="mt-auto pt-3 d-flex gap-2">
-                                    <a href="{% url 'weed_edit' weed.pk %}" 
-                                       class="btn btn-primary">
-                                        Edit weed
-                                    </a>
-                                    <a href="{% url 'weed_list' %}" 
-                                       class="btn btn-secondary">
-                                        Back to List
-                                    </a>
+                                    <a href="{% url 'weed_edit' weed.pk %}" class="btn btn-primary">Edit Weed</a>
                                     <button type="button" 
                                             class="btn btn-danger"
                                             data-bs-toggle="modal" 
                                             data-bs-target="#deleteModal">
-                                        Delete weed
+                                        Delete Weed
                                     </button>
                                 </div>
+                                {% endif %}
+                                
+                                <a href="{% url 'weed_list' %}" class="btn btn-secondary mt-3">Back to List</a>
                             </div>
                         </div>
                     </div>
@@ -66,6 +66,7 @@
 </div>
 
 <!-- Delete Confirmation Modal -->
+{% if user.role == "agricultural_expert" or user.is_superuser %}
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -78,13 +79,13 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form method="post" action="{% url 'weed_delete' weed.pk %}" style="display: inline;">
+                <form method="post" action="{% url 'weed_delete' weed.pk %}">
                     {% csrf_token %}
-                    <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+{% endif %}
 {% endblock %}

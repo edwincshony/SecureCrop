@@ -16,6 +16,7 @@
                     <thead style="background-color: #000; color: #fff;">
                         <tr>
                             <th>Pest</th>
+                            <th>Crop</th>  {# Added Crop Column #}
                             <th>Treatment Method</th>
                             <th>Date</th>
                             <th>Time</th>
@@ -32,6 +33,7 @@
                         {% for outcome in outcomes %}
                             <tr>
                                 <td>{{ outcome.pest.name }}</td>
+                                <td>{{ outcome.crop.name|default:"Unknown Crop" }}</td> {# Display Crop Type #}
                                 <td>{{ outcome.treatment_method }}</td>
                                 <td>{{ outcome.date_applied }}</td>
                                 <td>{{ outcome.time_applied|default:"Unknown" }}</td>
