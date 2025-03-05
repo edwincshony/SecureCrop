@@ -6,34 +6,179 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <h1 class="text-center mb-4">{{ profile_owner.username }}'s {{ profile_owner.role }} Profile</h1>
+            <div class="text-center mb-4">
+                <h1 class="fw-bold">{{ profile_owner.username }}'s {{ profile_owner.role|title }} Profile</h1>
+            </div>
 
-            <div class="card dashboard-card">
+            <div class="card shadow-sm mb-4">
                 <div class="card-body">
-                    <h5 class="card-title">User Information</h5>
-                    <p><strong>Username:</strong> {{ profile_owner.username }}</p>
-                    <p><strong>Full Name:</strong> {{ profile_owner.first_name }} {{ profile_owner.last_name }}</p>
-                    <p><strong>Email:</strong> {{ profile_owner.email }}</p>
-                    <p><strong>Phone Number:</strong> {{ profile_owner.phone_number|default:"Not provided" }}</p>
-                    <p><strong>Role:</strong> {{ profile_owner.role }}</p>
-
-                    {% if profile_owner.role == 'farmer' and profile %}
-                        <h5 class="card-title mt-3">Farmer Details</h5>
-                        <p><strong>Location:</strong> {{ profile.location|default:"Not provided" }}</p>
-                        <p><strong>Crop Types:</strong> {{ profile.crop_types|default:"Not provided" }}</p>
-                        {% if profile.profile_picture %}
-                            <p><strong>Profile Picture:</strong> <img src="{{ profile.profile_picture.url }}" alt="{{ profile_owner.username }}'s profile" class="profile-photo"></p>
-                        {% endif %}
-                    {% elif profile_owner.role == 'agricultural_expert' and profile %}
-                        <h5 class="card-title mt-3">Expert Details</h5>
-                        <p><strong>Expertise:</strong> {{ profile.expertise|default:"Not provided" }}</p>
-                        <p><strong>Experience Years:</strong> {{ profile.experience_years|default:"Not provided" }}</p>
-                        {% if profile.profile_picture %}
-                            <p><strong>Profile Picture:</strong> <img src="{{ profile.profile_picture.url }}" alt="{{ profile_owner.username }}'s profile" class="profile-photo"></p>
-                        {% endif %}
-                    {% endif %}
+                    <h5 class="card-title"><i class="fas fa-user"></i> User Information</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Username:</strong> {{ profile_owner.username }}</li>
+                        <li class="list-group-item"><strong>Full Name:</strong> {{ profile_owner.first_name }} {{ profile_owner.last_name }}</li>
+                        <li class="list-group-item"><strong>Email:</strong> {{ profile_owner.email }}</li>
+                        <li class="list-group-item"><strong>Phone Number:</strong> {{ profile_owner.phone_number|default:"Not provided" }}</li>
+                        <li class="list-group-item"><strong>Role:</strong> <span class="badge bg-primary">{{ profile_owner.role|title }}</span></li>
+                    </ul>
                 </div>
             </div>
+
+            {% if profile_owner.role == 'farmer' %}
+                <div class="mt-4">
+                    <h3 class="text-center mb-3"><i class="fas fa-seedling"></i> Farmer Activities</h3>
+
+                    <!-- Pest Sightings -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-bug"></i> Pest Sightings</h5>
+                            {% if pest_sightings %}
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Pest Name</th>
+                                            <th>Location</th>
+                                            <th>Date</th>
+                                            <th>Symptoms</th>
+                                            <th>Control Measures</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for sighting in pest_sightings %}
+                                            <tr>
+                                                <td>{{ sighting.pest_name|default:"Unknown Pest" }}</td>
+                                                <td>{{ sighting.location }}</td>
+                                                <td>{{ sighting.date }}</td>
+                                                <td>{{ sighting.symptoms_recap|default:"N/A" }}</td>
+                                                <td>{{ sighting.control_measures|default:"N/A" }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <div class="alert alert-warning">No pest sightings reported.</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Treatment Outcomes -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-medkit"></i> Treatment Outcomes</h5>
+                            {% if treatment_outcomes %}
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Pest</th>
+                                            <th>Date Applied</th>
+                                            <th>Method</th>
+                                            <th>Effectiveness</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for treatment in treatment_outcomes %}
+                                            <tr>
+                                                <td>{{ treatment.pest.name }}</td>
+                                                <td>{{ treatment.date_applied }}</td>
+                                                <td>{{ treatment.treatment_method }}</td>
+                                                <td><span class="badge bg-info">{{ treatment.get_effectiveness_display }}</span></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <div class="alert alert-warning">No treatment outcomes recorded.</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Advisory Requests -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-comments"></i> Advisory Requests</h5>
+                            {% if advisory_requests %}
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Crop</th>
+                                            <th>Issue</th>
+                                            <th>Location</th>
+                                            <th>Status</th>
+                                            <th>Expert Response</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for request in advisory_requests %}
+                                            <tr>
+                                                <td>{{ request.crop_type }}</td>
+                                                <td>{{ request.get_issue_type_display }}</td>
+                                                <td>{{ request.location }}</td>
+                                                <td><span class="badge bg-warning">{{ request.get_status_display }}</span></td>
+                                                <td>{{ request.recommendation|default:"Pending" }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <div class="alert alert-warning">No advisory requests submitted.</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Crop Lifecycle Events -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title"><i class="fas fa-leaf"></i> Crop Lifecycle Events</h5>
+                            {% if crop_lifecycle_events %}
+                                {% regroup crop_lifecycle_events by crop.name as crop_groups %}
+                                <div class="accordion" id="cropEventsAccordion">
+                                    {% for group in crop_groups %}
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                                                <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" 
+                                                        type="button" 
+                                                        data-bs-toggle="collapse" 
+                                                        data-bs-target="#collapse{{ forloop.counter }}" 
+                                                        aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" 
+                                                        aria-controls="collapse{{ forloop.counter }}">
+                                                    {{ group.grouper }} ({{ group.list|length }} events)
+                                                </button>
+                                            </h2>
+                                            <div id="collapse{{ forloop.counter }}" 
+                                                 class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" 
+                                                 aria-labelledby="heading{{ forloop.counter }}" 
+                                                 data-bs-parent="#cropEventsAccordion">
+                                                <div class="accordion-body">
+                                                    <table class="table table-striped mb-0">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Stage</th>
+                                                                <th>Date</th>
+                                                                <th>Description</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for event in group.list %}
+                                                                <tr>
+                                                                    <td>{{ event.get_stage_display }}</td>
+                                                                    <td>{{ event.date }}</td>
+                                                                    <td>{{ event.description }}</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-warning">No crop lifecycle events recorded.</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

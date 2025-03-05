@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
+from reports.models import PestSighting, TreatmentOutcome
+from pest_weed_db.models import CropLifecycle
+from control_advisory.models import AdvisoryRequest
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from .forms import SignupForm, FarmerProfileForm, ExpertProfileForm
@@ -90,25 +93,22 @@ def profile(request):
         'profile_form': profile_form
     })
 
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from control_advisory.models import AdvisoryRequest
-from reports.models import PestSighting,TreatmentOutcome
-
 @login_required
 def public_profile(request, username):
     profile_owner = get_object_or_404(CustomUser, username=username)
 
-    if profile_owner.role == 'farmer':
-        profile = profile_owner.farmer_profile
-    elif profile_owner.role == 'agricultural_expert':
-        profile = profile_owner.expert_profile
-    else:
-        profile = None
+    # Get farmer profile-related data
+    pest_sightings = PestSighting.objects.filter(user=profile_owner)
+    treatment_outcomes = TreatmentOutcome.objects.filter(user=profile_owner)
+    advisory_requests = AdvisoryRequest.objects.filter(user=profile_owner)
+    crop_lifecycle_events = CropLifecycle.objects.filter(user=profile_owner)
 
     context = {
         'profile_owner': profile_owner,
-        'profile': profile,
+        'pest_sightings': pest_sightings,
+        'treatment_outcomes': treatment_outcomes,
+        'advisory_requests': advisory_requests,
+        'crop_lifecycle_events': crop_lifecycle_events,
     }
     return render(request, 'accounts/public_profile.html', context)
 
@@ -130,6 +130,42 @@ def user_list(request):
         'selected_role': role_filter,  # To highlight the active filter
     }
     return render(request, 'accounts/user_list.html', context)
+
+
+
+def dashboard_overview(request):
+    context = {
+        "pest_sighting_count": PestSighting.objects.count(),
+        "recent_pest_sighting": PestSighting.objects.order_by('-date').first(),
+        
+        "treatment_count": TreatmentOutcome.objects.count(),
+        "recent_treatment": TreatmentOutcome.objects.order_by('-date_applied').first(),
+        
+        "advisory_request_count": AdvisoryRequest.objects.count(),
+        "pending_advisories": AdvisoryRequest.objects.filter(status='pending').count(),
+        
+        "crop_event_count": CropLifecycle.objects.count(),
+        "recent_crop_event": CropLifecycle.objects.order_by('-date').first(),
+    }
+    return render(request, "accounts/overview.html", context)
+
+def pest_sightings_list(request):
+    sightings = PestSighting.objects.order_by('-date')
+    return render(request, "accounts/pest_sightings.html", {"sightings": sightings})
+
+def treatments_list(request):
+    treatments = TreatmentOutcome.objects.order_by('-date_applied')
+    return render(request, "accounts/treatments.html", {"treatments": treatments})
+
+def advisory_requests_list(request):
+    advisory_requests = AdvisoryRequest.objects.all().order_by('-created_at')
+    return render(request, "accounts/advisory_requests.html", {"requests": advisory_requests})
+
+def crop_lifecycle_list1(request):
+    events = CropLifecycle.objects.order_by('-date')
+    return render(request, "accounts/crop_lifecycle.html", {"events": events})
+
+
 
 def logout_view(request):
     logout(request)

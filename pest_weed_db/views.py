@@ -148,11 +148,12 @@ class CropLifecycleListView(ListView):
     }
 
     def get_queryset(self):
-        queryset = CropLifecycle.objects.all().order_by('crop__name', '-date')
-        crop_filter = self.request.GET.get('crop', '')
-        if crop_filter:
-            queryset = queryset.filter(crop__name=crop_filter)
-        return queryset
+            queryset = CropLifecycle.objects.filter(user=self.request.user).order_by('crop__name', '-date')
+            crop_filter = self.request.GET.get('crop', '')
+            if crop_filter:
+                queryset = queryset.filter(crop__name=crop_filter)
+            return queryset
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

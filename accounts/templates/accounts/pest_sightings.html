@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Pest Sightings{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Pest Sightings</h2>
+
+    <input type="text" id="table-search" class="form-control mb-3" placeholder="Search...">
+
+    <table class="table table-bordered searchable-table">
+        <thead>
+            <tr>
+                <th>Submitted By</th>
+                <th>Pest Name</th>
+                <th>Location</th>
+                <th>Date</th>
+                <th>Symptoms</th>
+                <th>Control Measures</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sighting in sightings %}
+                <tr>
+                    <td>{{ sighting.user.username }}</td>
+                    <td>{{ sighting.pest_name|default:"Unknown" }}</td>
+                    <td>{{ sighting.location }}</td>
+                    <td>{{ sighting.date }}</td>
+                    <td>{{ sighting.symptoms_recap|default:"N/A" }}</td>
+                    <td>{{ sighting.control_measures|default:"Pending" }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="6" class="text-center">No pest sightings found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script src="{% static 'js/search.js' %}"></script>
+{% endblock %}

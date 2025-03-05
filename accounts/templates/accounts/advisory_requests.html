@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Advisory Requests{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Recent Advisory Requests</h2>
+    
+    <input type="text" id="table-search" class="form-control mb-3" placeholder="Search...">
+    
+    <table class="table table-bordered searchable-table">
+        <thead>
+            <tr>
+                <th>Submitted By</th>
+                <th>Crop Type</th>
+                <th>Issue Type</th>
+                <th>Status</th>
+                <th>Response By</th>
+                <th>Recommendation</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in requests %}
+                <tr>
+                    <td>{{ request.user.username }}</td>
+                    <td>{{ request.crop_type }}</td>
+                    <td>{{ request.get_issue_type_display }}</td>
+                    <td>{{ request.get_status_display }}</td>
+                    <td>{{ request.responded_by.username|default:"Pending" }}</td>
+                    <td>{{ request.recommendation|default:"No response yet" }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="6" class="text-center">No recent advisory requests.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script src="{% static 'js/search.js' %}"></script>
+{% endblock %}

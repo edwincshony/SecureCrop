@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Crop Lifecycle{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Crop Lifecycle Journey</h2>
+
+    <!-- User Selection Dropdown -->
+    <label for="userSelect">Select User:</label>
+    <select id="userSelect" class="form-control mb-3" onchange="filterEvents()">
+        <option value="all">All Users</option>
+        {% for user in users %}
+            <option value="{{ user.username }}">{{ user.username }}</option>
+        {% endfor %}
+    </select>
+
+    <!-- Events Container -->
+    <div id="eventsContainer">
+        {% for event in events %}
+        <div class="event-card" data-user="{{ event.user.username }}">
+            <h4>{{ event.crop.name }} - {{ event.get_stage_display }}</h4>
+            <p><strong>Submitted By:</strong> {{ event.user.username }}</p>
+            <p><strong>Description:</strong> {{ event.description }}</p>
+            <p><strong>Date:</strong> {{ event.date }}</p>
+        </div>
+        {% empty %}
+        <p class="text-center">No recent crop lifecycle events.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Inline CSS -->
+<style>
+    .event-card {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 10px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out;
+    }
+    .event-card:hover {
+        transform: scale(1.03);
+    }
+</style>
+
+<!-- Inline JavaScript -->
+<script>
+    function filterEvents() {
+        let selectedUser = document.getElementById("userSelect").value;
+        let events = document.querySelectorAll(".event-card");
+
+        events.forEach(event => {
+            if (selectedUser === "all" || event.getAttribute("data-user") === selectedUser) {
+                event.style.display = "block";
+            } else {
+                event.style.display = "none";
+            }
+        });
+    }
+</script>
+
+{% endblock %}

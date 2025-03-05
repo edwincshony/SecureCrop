@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard Overview{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-5" style="font-family: 'Arial', sans-serif; font-weight: bold; color: #2c3e50;">
+        General Farming Activity Overview
+    </h1>
+
+    <!-- First Row: Pest Sightings and Treatments -->
+    <div class="row mb-4 justify-content-center">
+        <!-- Pest Sightings Card -->
+        <div class="col-md-5 mx-3">
+            <div class="card text-center border-success shadow-sm h-100" style="border-radius: 15px; background: linear-gradient(135deg, #e9f7ef, #ffffff);">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="card-title" style="color: #27ae60;">Pest Sightings</h5>
+                        <p class="card-text display-6" style="font-weight: bold; color: #2c3e50;">{{ pest_sighting_count }}</p>
+                        <p class="text-muted">Total Sightings</p>
+                        {% if recent_pest_sighting %}
+                            <p class="text-muted">Latest: <span style="color: #27ae60;">{{ recent_pest_sighting.pest_name }}</span></p>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'pest_sightings_list' %}" class="btn btn-success mt-3" style="border-radius: 20px; padding: 8px 20px;">View Details</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Treatments Card -->
+        <div class="col-md-5 mx-3">
+            <div class="card text-center border-info shadow-sm h-100" style="border-radius: 15px; background: linear-gradient(135deg, #e8f4f8, #ffffff);">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="card-title" style="color: #3498db;">Treatments</h5>
+                        <p class="card-text display-6" style="font-weight: bold; color: #2c3e50;">{{ treatment_count }}</p>
+                        <p class="text-muted">Total Treatments</p>
+                        
+                    </div>
+                    <a href="{% url 'treatments_list' %}" class="btn btn-info mt-3" style="border-radius: 20px; padding: 8px 20px;">View Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Row: Advisory Requests and Crop Lifecycle -->
+    <div class="row justify-content-center">
+        <!-- Advisory Requests Card -->
+        <div class="col-md-5 mx-3">
+            <div class="card text-center border-warning shadow-sm h-100" style="border-radius: 15px; background: linear-gradient(135deg, #fef5e7, #ffffff);">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="card-title" style="color: #f1c40f;">Advisory Requests</h5>
+                        <p class="card-text display-6" style="font-weight: bold; color: #2c3e50;">{{ advisory_request_count }}</p>
+                        <p class="text-muted">Total Requests</p>
+                        <p class="text-danger">Pending: {{ pending_advisories }}</p>
+                    </div>
+                    <a href="{% url 'advisory_requests_list' %}" class="btn btn-warning mt-3" style="border-radius: 20px; padding: 8px 20px; color: #fff;">View Details</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crop Lifecycle Card -->
+        <div class="col-md-5 mx-3">
+            <div class="card text-center border-primary shadow-sm h-100" style="border-radius: 15px; background: linear-gradient(135deg, #e8eaf6, #ffffff);">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="card-title" style="color: #2980b9;">Crop Lifecycle</h5>
+                        <p class="card-text display-6" style="font-weight: bold; color: #2c3e50;">{{ crop_event_count }}</p>
+                        <p class="text-muted">Total Events</p>
+                        
+                    </div>
+                    <a href="{% url 'crop_lifecycle_list1' %}" class="btn btn-primary mt-3" style="border-radius: 20px; padding: 8px 20px;">View Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
