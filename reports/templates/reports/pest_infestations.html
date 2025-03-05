@@ -3,155 +3,170 @@
 {% block title %}Pest Infestations{% endblock %}
 
 {% block content %}
-    <h1 class="mb-4">Pest Infestations</h1>
+    <div class="container">
+        <h1 class="mb-4">Pest Infestations</h1>
 
-    {% if user.role == 'farmer' %}
-        <a href="{% url 'pest_sighting_create' %}" class="btn btn-success mb-3">Report New Sighting</a>
-    {% endif %}
+        {% if user.role == 'farmer' %}
+            <a href="{% url 'pest_sighting_create' %}" class="btn btn-success mb-3">Report New Sighting</a>
+        {% endif %}
 
-    <!-- Crop Filter Form -->
-    <form method="get" class="mb-4" id="cropFilterForm">
-        <div class="row">
-            <div class="col-md-4">
-                <select name="crop" class="form-select" id="cropSelect">
-                    <option value="">All Crops</option>
-                    {% for crop in crops %}
-                        <option value="{{ crop.id }}" {% if selected_crop == crop.id|stringformat:"s" %}selected{% endif %}>
-                            {{ crop.name }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
-    </form>
-
-    {% if sightings %}
-        <div class="card dashboard-card">
-            <div class="card-body">
-                <table class="table table-bordered table-hover">
-                    <thead style="background-color: #000; color: #fff;">
-                        <tr>
-                            <th>Crop</th>
-                            <th>Location</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Notes</th>
-                            {% if user.role == 'agricultural_expert' or user.role == 'farmer' %}
-                                <th>Actions</th>
-                            {% endif %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for sighting in sightings %}
-                            <tr>
-                                <td>{{ sighting.crop.name|default:"Not specified" }}</td>
-                                <td>{{ sighting.location }}</td>
-                                <td>{{ sighting.date }}</td>
-                                <td>{{ sighting.time|default:"Unknown" }}</td>
-                                <td>{{ sighting.notes|default:"No notes" }}</td>
-                                {% if user.role == 'agricultural_expert' or user.role == 'farmer' %}
-                                    <td>
-                                        {% if user.role == 'agricultural_expert' %}
-                                            <a href="{% url 'expert_response' sighting.pk %}" class="btn btn-primary btn-sm">Respond</a>
-                                        {% endif %}
-                                        {% if user.role == 'farmer' and user == sighting.user %}
-                                            <a href="{% url 'pest_sighting_edit' sighting.pk %}" class="btn btn-warning btn-sm">Edit</a>
-                                            <button class="btn btn-danger btn-sm confirm-delete" 
-                                                    data-sighting-id="{{ sighting.pk }}"
-                                                    data-item="Pest Sighting from {{ sighting.date }}">
-                                                Delete
-                                            </button>
-                                            {% if sighting.pest_name %}
-                                                <a href="{% url 'expert_response_detail' sighting.pk %}" class="btn btn-info btn-sm">View Expert Response</a>
-                                                <a href="{% url 'treatment_outcome_create_from_sighting' sighting.crop.id sighting.pest_name %}" 
-                                                   class="btn btn-success btn-sm">Report Treatment Outcome</a>
-                                            {% endif %}
-                                        {% endif %}
-                                    </td>
-                                {% endif %}
-                            </tr>
+        <!-- Search and Filter Section -->
+        <div class="mb-4">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search all fields...">
+                </div>
+                <div class="col-md-4">
+                    <select name="crop" class="form-select" id="cropSelect">
+                        <option value="">All Crops</option>
+                        {% for crop in crops %}
+                            <option value="{{ crop.id }}" {% if selected_crop == crop.id|stringformat:"s" %}selected{% endif %}>
+                                {{ crop.name }}
+                            </option>
                         {% endfor %}
-                    </tbody>
-                </table>
+                    </select>
+                </div>
             </div>
         </div>
-    {% else %}
-        <div class="alert alert-info">No pest sightings found.</div>
-    {% endif %}
 
-    <!-- Confirmation Modal for Delete -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        {% if sightings %}
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                        <table class="table table-bordered table-hover align-middle" id="pestTable">
+                            <thead class="table-dark position-sticky top-0">
+                                <tr>
+                                    <th>Crop</th>
+                                    <th>Location</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Notes</th>
+                                    {% if user.role == 'agricultural_expert' or user.role == 'farmer' %}
+                                        <th>Actions</th>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody id="pestTableBody">
+                                {% for sighting in sightings %}
+                                    <tr>
+                                        <td>{{ sighting.crop.name|default:"Not specified" }}</td>
+                                        <td>{{ sighting.location }}</td>
+                                        <td>{{ sighting.date }}</td>
+                                        <td>{{ sighting.time|default:"Unknown" }}</td>
+                                        <td>{{ sighting.notes|default:"No notes" }}</td>
+                                        {% if user.role == 'agricultural_expert' or user.role == 'farmer' %}
+                                            <td>
+                                                <div class="d-flex gap-2">
+                                                    {% if user.role == 'agricultural_expert' %}
+                                                        <a href="{% url 'expert_response' sighting.pk %}" class="btn btn-primary btn-sm">Respond</a>
+                                                    {% endif %}
+                                                    {% if user.role == 'farmer' and user == sighting.user %}
+                                                        <a href="{% url 'pest_sighting_edit' sighting.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                                                        <button class="btn btn-danger btn-sm confirm-delete" 
+                                                                data-sighting-id="{{ sighting.pk }}"
+                                                                data-item="Pest Sighting from {{ sighting.date }}">
+                                                            Delete
+                                                        </button>
+                                                        {% if sighting.pest_name %}
+                                                            <a href="{% url 'expert_response_detail' sighting.pk %}" class="btn btn-info btn-sm">View Response</a>
+                                                            <a href="{% url 'treatment_outcome_create_from_sighting' sighting.crop.id sighting.pest_name %}" 
+                                                               class="btn btn-success btn-sm">Report Outcome</a>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    Are you sure you want to delete <strong id="deleteItem"></strong>?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <form id="deleteForm" method="post" action="">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
+            </div>
+        {% else %}
+            <div class="alert alert-info">No pest sightings found.</div>
+        {% endif %}
+
+        <!-- Confirmation Modal for Delete -->
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete <strong id="deleteItem"></strong>?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form id="deleteForm" method="post" action="">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 {% endblock %}
 
+
+
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Auto-submit form on crop selection change
+        const searchInput = document.getElementById('searchInput');
+        const tableBody = document.getElementById('pestTableBody');
         const cropSelect = document.getElementById('cropSelect');
-        const cropFilterForm = document.getElementById('cropFilterForm');
-        
+        const rows = Array.from(tableBody.getElementsByTagName('tr'));
+
+        // Real-time search function
+        function filterTable() {
+            const searchText = searchInput.value.toLowerCase().trim();
+            const selectedCrop = cropSelect.value;
+
+            rows.forEach(row => {
+                const cells = row.getElementsByTagName('td');
+                const textContent = Array.from(cells)
+                    .slice(0, -1) // Exclude the actions column
+                    .map(cell => cell.textContent.toLowerCase())
+                    .join(' ');
+                
+                const matchesSearch = searchText === '' || textContent.includes(searchText);
+                const matchesCrop = selectedCrop === '' || cells[0].textContent === cropSelect.options[cropSelect.selectedIndex].text;
+
+                row.style.display = (matchesSearch && matchesCrop) ? '' : 'none';
+            });
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', filterTable);
         cropSelect.addEventListener('change', function() {
-            cropFilterForm.submit();
+            filterTable();
+            // Optional: Submit form if you still want server-side filtering
+            document.getElementById('cropFilterForm')?.submit();
         });
 
-        // Existing delete functionality
-        const deleteButtons = document.querySelectorAll('.confirm-delete');
-        const deleteForm = document.getElementById('deleteForm');
-        const deleteItem = document.getElementById('deleteItem');
-
-        deleteButtons.forEach(button => {
+        // Handle delete confirmation
+        document.querySelectorAll('.confirm-delete').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
-                const sightingId = this.getAttribute('data-sighting-id');
-                const item = this.getAttribute('data-item');
-                deleteItem.textContent = item;
-                deleteForm.action = `{% url 'pest_sighting_delete' 0 %}`.replace('0', sightingId);
-                const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
-                modal.show();
+                document.getElementById('deleteItem').textContent = this.dataset.item;
+                document.getElementById('deleteForm').action = `{% url 'pest_sighting_delete' 0 %}`.replace('0', this.dataset.sightingId);
+                new bootstrap.Modal(document.getElementById('confirmDeleteModal')).show();
             });
         });
 
-        deleteForm.addEventListener('submit', function(e) {
+        document.getElementById('deleteForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            fetch(deleteForm.action, {
+            fetch(this.action, {
                 method: 'POST',
-                headers: {
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                },
-                body: new URLSearchParams({
-                    'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                })
+                headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
+                body: new URLSearchParams({ 'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value })
             })
-            .then(response => {
-                if (response.ok) {
-                    window.location.reload();
-                } else {
-                    alert('Failed to delete the report. Please try again.');
-                }
-            })
-            .catch(error => {
-                alert('An error occurred while deleting the report.');
-                console.error('Error:', error);
-            });
+            .then(response => response.ok ? window.location.reload() : alert('Failed to delete.'))
+            .catch(error => console.error('Error:', error));
         });
     });
 </script>

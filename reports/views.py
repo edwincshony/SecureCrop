@@ -67,14 +67,14 @@ class PestInfestationsReportView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
         queryset = PestSighting.objects.all().order_by('-date', '-time')
-        
+
         if user.role == 'farmer':
             queryset = PestSighting.objects.filter(user=user).order_by('-date', '-time')
-            
+
         crop_id = self.request.GET.get('crop')
         if crop_id:
             queryset = queryset.filter(crop_id=crop_id)
-            
+
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -82,6 +82,9 @@ class PestInfestationsReportView(LoginRequiredMixin, ListView):
         context['crops'] = Crop.objects.all()
         context['selected_crop'] = self.request.GET.get('crop', '')
         return context
+
+
+
 
 class TreatmentOutcomesReportView(LoginRequiredMixin, ListView):
     model = TreatmentOutcome

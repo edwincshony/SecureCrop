@@ -1,7 +1,15 @@
 from django import forms
 from .models import AdvisoryRequest
+from pest_weed_db.models import Crop
 
 class AdvisoryForm(forms.ModelForm):
+    # Dynamically populate crop_type choices from the Crop model
+    crop_type = forms.ModelChoiceField(
+        queryset=Crop.objects.all(),
+        label="Crop Type",
+        empty_label="--------"
+    )
+
     class Meta:
         model = AdvisoryRequest
         fields = ['crop_type', 'location', 'issue_type', 'description']
@@ -9,7 +17,6 @@ class AdvisoryForm(forms.ModelForm):
             'description': forms.Textarea,
         }
         labels = {
-            'crop_type': 'Crop Type',
             'location': 'Location',
             'issue_type': 'Issue Type',
             'description': 'Description of Issue',

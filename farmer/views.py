@@ -4,6 +4,7 @@ from pest_weed_db.models import Pest, Weed
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import DeleteView
 from accounts.models import CustomUser
+from control_advisory.models import AdvisoryRequest, AdvisoryResponse
 from notifications.models import Notification
 from control_advisory.models import AdvisoryRequest
 from reports.models import PestSighting, TreatmentOutcome
@@ -94,11 +95,17 @@ def advisory_requests_page(request):
 @login_required
 def advisory_request_detail(request, request_id):
     advisory_request = get_object_or_404(AdvisoryRequest, id=request_id, user=request.user)
+
+    responses = AdvisoryResponse.objects.filter(advisory_request=advisory_request).order_by('-created_at')
+
     
     context = {
-        'advisory_request': advisory_request
+        'advisory_request': advisory_request,
+        'responses': responses
     }
     return render(request, 'farmer/advisory_request_detail.html', context)
+
+
 
 
 

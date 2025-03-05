@@ -9,27 +9,36 @@
         {% for advisory in advisory_requests %}
         <div class="accordion-item">
             <h2 class="accordion-header" id="heading{{ forloop.counter }}">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ forloop.counter }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#collapse{{ forloop.counter }}" 
+                        aria-expanded="true" aria-controls="collapse{{ forloop.counter }}">
                     {{ advisory.crop_type }} ({{ advisory.issue_type }}) - {{ advisory.status }}
                 </button>
             </h2>
-            <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#requestsAccordion">
+            <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse 
+                 {% if forloop.first %}show{% endif %}" 
+                 aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#requestsAccordion">
                 <div class="accordion-body">
                     <p><strong>Submitted by:</strong> {{ advisory.user.username }}</p>
                     <p><strong>Date:</strong> {{ advisory.created_at|date:"F d, Y" }}</p>
-                    {% if advisory.recommendation %}
-                        <p><strong>Current Recommendation:</strong> {{ advisory.recommendation }}</p>
-                        <p><strong>Last Responded by:</strong> {{ advisory.responded_by.username }} on {{ advisory.updated_at|date:"F d, Y" }}</p>
-                    {% endif %}
+    
+                   
+                    
+                    <!-- View Responses Button -->
+                    <a href="{% url 'advisory_response_history' advisory.pk %}" class="btn btn-primary btn-sm">
+                        View Responses
+                    </a>
+
+                    <!-- Respond / Reply Again Button -->
                     <a href="{% url 'respond_advisory' advisory.pk %}" class="btn btn-success btn-sm">
                         {% if advisory.status == 'pending' %}Respond{% else %}Reply Again{% endif %}
                     </a>
                 </div>
             </div>
         </div>
-        {% empty %}
+    {% empty %}
         <p>No advisory requests available.</p>
-        {% endfor %}
+    {% endfor %}
     </div>
 
     <a href="{% url 'expert_dashboard' %}" class="btn btn-secondary mt-3">Back to Dashboard</a>

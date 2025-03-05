@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings  # Import settings to reference AUTH_USER_MODEL
 from accounts.models import CustomUser
 
 class AdvisoryRequest(models.Model):
@@ -23,3 +24,12 @@ class AdvisoryRequest(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.crop_type} ({self.issue_type}) - {self.status}"
+    
+class AdvisoryResponse(models.Model):
+    advisory_request = models.ForeignKey(AdvisoryRequest, on_delete=models.CASCADE, related_name="responses")
+    expert = models.ForeignKey(CustomUser, on_delete=models.CASCADE)  # Use AUTH_USER_MODEL
+    response_text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Response by {self.expert.username} on {self.advisory_request}"

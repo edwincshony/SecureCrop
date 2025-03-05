@@ -90,6 +90,10 @@ def profile(request):
         'profile_form': profile_form
     })
 
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from control_advisory.models import AdvisoryRequest
+from reports.models import PestSighting,TreatmentOutcome
 
 @login_required
 def public_profile(request, username):
@@ -107,6 +111,7 @@ def public_profile(request, username):
         'profile': profile,
     }
     return render(request, 'accounts/public_profile.html', context)
+
 
 def user_list(request):
     # Get only approved users: is_active=True and userapproval.status='approved'

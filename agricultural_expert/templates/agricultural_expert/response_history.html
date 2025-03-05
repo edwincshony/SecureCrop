@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Response History{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="fw-bold text-success">Response History</h1>
+
+    <div class="card shadow-sm border">
+        <div class="card-body">
+            <p><strong>Crop Type:</strong> {{ advisory_request.crop_type }}</p>
+            <p><strong>Issue Type:</strong> {{ advisory_request.issue_type }}</p>
+            <p><strong>Description:</strong> {{ advisory_request.description }}</p>
+            <p><strong>Submitted on:</strong> {{ advisory_request.created_at|date:"M d, Y H:i A" }}</p>
+
+            {% if responses %}
+                <hr>
+                <h5 class="text-success">Expert Responses:</h5>
+                <ul class="list-group">
+                    {% for response in responses %}
+                        <li class="list-group-item">
+                            <strong>{{ response.expert.username }}</strong>: {{ response.response_text }}
+                            <small class="text-muted d-block">{{ response.created_at|date:"F d, Y H:i A" }}</small>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No responses yet.</p>
+            {% endif %}
+
+            <div class="mt-3">
+                <a href="{% url 'all_advisory_requests' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Advisory Requests
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
