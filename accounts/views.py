@@ -97,11 +97,16 @@ def profile(request):
 def public_profile(request, username):
     profile_owner = get_object_or_404(CustomUser, username=username)
 
-    # Get farmer profile-related data
-    pest_sightings = PestSighting.objects.filter(user=profile_owner)
-    treatment_outcomes = TreatmentOutcome.objects.filter(user=profile_owner)
-    advisory_requests = AdvisoryRequest.objects.filter(user=profile_owner)
-    crop_lifecycle_events = CropLifecycle.objects.filter(user=profile_owner)
+    if profile_owner.role == "farmer":
+        pest_sightings = PestSighting.objects.filter(user=profile_owner)
+        treatment_outcomes = TreatmentOutcome.objects.filter(user=profile_owner)
+        advisory_requests = AdvisoryRequest.objects.filter(user=profile_owner)
+        crop_lifecycle_events = CropLifecycle.objects.filter(user=profile_owner)
+    elif profile_owner.role == "agricultural_expert":
+        pest_sightings = PestSighting.objects.filter(identification_confirmation=True, next_steps__isnull=False)
+        treatment_outcomes = TreatmentOutcome.objects.filter(user=profile_owner)
+        advisory_requests = AdvisoryRequest.objects.filter(responded_by=profile_owner)
+        crop_lifecycle_events = CropLifecycle.objects.filter(user=profile_owner)  # If experts track timelines
 
     context = {
         'profile_owner': profile_owner,
@@ -111,6 +116,8 @@ def public_profile(request, username):
         'crop_lifecycle_events': crop_lifecycle_events,
     }
     return render(request, 'accounts/public_profile.html', context)
+
+
 
 
 def user_list(request):
@@ -162,8 +169,26 @@ def advisory_requests_list(request):
     return render(request, "accounts/advisory_requests.html", {"requests": advisory_requests})
 
 def crop_lifecycle_list1(request):
-    events = CropLifecycle.objects.order_by('-date')
-    return render(request, "accounts/crop_lifecycle.html", {"events": events})
+    query = request.GET.get("user", "")
+    events = CropLifecycle.objects.order_by("crop__name", "-date")
+
+    if query:
+        events = events.filter(user__username=query)
+
+    # Grouping events by crop
+    grouped_events = {}
+    for event in events:
+        if event.crop.name not in grouped_events:
+            grouped_events[event.crop.name] = []
+        grouped_events[event.crop.name].append(event)
+
+    users = CropLifecycle.objects.values_list("user__username", flat=True).distinct()
+
+    return render(request, "accounts/crop_lifecycle.html", {
+        "grouped_events": grouped_events,
+        "users": users,
+        "selected_user": query,
+    })
 
 
 

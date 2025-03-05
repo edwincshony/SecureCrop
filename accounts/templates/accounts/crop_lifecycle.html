@@ -1,28 +1,46 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Crop Lifecycle{% endblock %}
-
+{% block title %}Crop Lifecycle Journey{% endblock %}
 {% block content %}
+
 <div class="container mt-4">
-    <h2 class="mb-4">Crop Lifecycle Journey</h2>
+    <h2 class="mb-4 text-center">Crop Lifecycle Journey</h2>
 
-    <!-- User Selection Dropdown -->
-    <label for="userSelect">Select User:</label>
-    <select id="userSelect" class="form-control mb-3" onchange="filterEvents()">
-        <option value="all">All Users</option>
-        {% for user in users %}
-            <option value="{{ user.username }}">{{ user.username }}</option>
-        {% endfor %}
-    </select>
+    <!-- User Filter Dropdown -->
+    <div class="filter-container mb-4">
+        <label for="userSelect"><strong>Filter by User:</strong></label>
+        <select id="userSelect" class="form-control" onchange="filterEvents()">
+            <option value="all">All Users</option>
+            {% for user in users %}
+            <option value="{{ user }}" {% if user == selected_user %}selected{% endif %}>{{ user }}</option>
+            {% endfor %}
+        </select>
+    </div>
 
-    <!-- Events Container -->
-    <div id="eventsContainer">
-        {% for event in events %}
-        <div class="event-card" data-user="{{ event.user.username }}">
-            <h4>{{ event.crop.name }} - {{ event.get_stage_display }}</h4>
-            <p><strong>Submitted By:</strong> {{ event.user.username }}</p>
-            <p><strong>Description:</strong> {{ event.description }}</p>
-            <p><strong>Date:</strong> {{ event.date }}</p>
+    <!-- Lifecycle Timeline -->
+    <div class="timeline-container">
+        {% for crop, events in grouped_events.items %}
+        <div class="crop-section">
+            <h3 class="crop-title" onclick="toggleCrop('{{ crop }}')">
+                {{ crop }} <span class="toggle-arrow">▼</span>
+            </h3>
+            <div class="timeline" id="crop-{{ crop|slugify }}">
+                {% for event in events %}
+                <div class="timeline-item" data-user="{{ event.user.username }}">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h4 class="timeline-title" onclick="toggleEvent(this)">
+                            {{ event.get_stage_display }}
+                        </h4>
+                        <div class="timeline-details">
+                            <p><strong>Submitted By:</strong> {{ event.user.username }}</p>
+                            <p><strong>Description:</strong> {{ event.description }}</p>
+                            <p><strong>Date:</strong> {{ event.date }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
         {% empty %}
         <p class="text-center">No recent crop lifecycle events.</p>
@@ -30,35 +48,129 @@
     </div>
 </div>
 
-<!-- Inline CSS -->
 <style>
-    .event-card {
-        background: #f8f9fa;
-        border-radius: 10px;
-        padding: 15px;
-        margin-bottom: 10px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease-in-out;
+    .timeline-container {
+        max-width: 800px;
+        margin: 0 auto;
     }
-    .event-card:hover {
-        transform: scale(1.03);
+
+    .crop-section {
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: #f9f9f9;
+    }
+
+    .crop-title {
+        font-size: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        color: #28a745;
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        background: #e8f5e9;
+        border-radius: 8px;
+    }
+
+    .toggle-arrow {
+        font-size: 16px;
+    }
+
+    .timeline {
+        display: none;
+        padding: 15px;
+    }
+
+    .timeline-item {
+        margin: 15px 0;
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+
+    .timeline-dot {
+        width: 16px;
+        height: 16px;
+        background: #28a745;
+        border-radius: 50%;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+
+    .timeline-content {
+        background: #ffffff;
+        padding: 10px;
+        border-radius: 6px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        flex-grow: 1;
+    }
+
+    .timeline-title {
+        margin: 0;
+        font-size: 16px;
+        color: #28a745;
+        cursor: pointer;
+    }
+
+    .timeline-details {
+        display: none;
+        margin-top: 8px;
+        font-size: 14px;
+        color: #555;
+    }
+
+    .timeline-details.show {
+        display: block;
     }
 </style>
 
-<!-- Inline JavaScript -->
 <script>
     function filterEvents() {
         let selectedUser = document.getElementById("userSelect").value;
-        let events = document.querySelectorAll(".event-card");
+        let url = new URL(window.location.href);
+        
+        if (selectedUser === "all") {
+            url.searchParams.delete("user");
+        } else {
+            url.searchParams.set("user", selectedUser);
+        }
+        
+        window.location.href = url.toString();
+    }
 
-        events.forEach(event => {
-            if (selectedUser === "all" || event.getAttribute("data-user") === selectedUser) {
-                event.style.display = "block";
+    function toggleEvent(element) {
+        let details = element.nextElementSibling;
+        details.classList.toggle("show");
+    }
+
+    function toggleCrop(cropId) {
+        let cropTimeline = document.getElementById("crop-" + cropId.toLowerCase().replace(/ /g, "-"));
+        let arrow = document.querySelector(`h3[onclick="toggleCrop('${cropId}')"] .toggle-arrow`);
+
+        if (cropTimeline.style.display === "none" || cropTimeline.style.display === "") {
+            cropTimeline.style.display = "block";
+            arrow.textContent = "▲";
+        } else {
+            cropTimeline.style.display = "none";
+            arrow.textContent = "▼";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const userFilter = urlParams.get("user") || "all";
+
+        document.querySelectorAll(".timeline-item").forEach(event => {
+            let eventUser = event.getAttribute("data-user");
+            if (userFilter === "all" || eventUser === userFilter) {
+                event.style.display = "flex";
             } else {
                 event.style.display = "none";
             }
         });
-    }
+    });
 </script>
 
 {% endblock %}
