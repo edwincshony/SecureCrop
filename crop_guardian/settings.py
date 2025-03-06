@@ -127,6 +127,8 @@ USE_TZ = True
 
 LOGIN_REDIRECT_URL = '/profile/'
 
+
+
 STATIC_URL = '/static/'  # URL prefix for static files
 
 # Directory where static files are stored during development

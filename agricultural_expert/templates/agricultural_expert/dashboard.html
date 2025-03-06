@@ -1,88 +1,123 @@
 {% extends 'base.html' %}
-{% block title %}Expert Dashboard{% endblock %}
+{% block title %}Agricultural Expert Dashboard{% endblock %}
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-5 text-center fw-bold text-primary">Welcome, {{ request.user.username }} 😊</h1>
+    <!-- Header with Gradient and Icon -->
+    <h1 class="mb-5 text-center fw-bold text-white p-3 rounded" style="background: linear-gradient(135deg, #2E7D32, #4CAF50);">
+        <i class="bi bi-leaf me-2"></i>Welcome, {{ request.user.username }} 🌾
+    </h1>
+
     <!-- Dashboard Cards in 2x2 Grid -->
     <div class="row g-4">
-        <!-- First Row -->
+        <!-- Advisory Requests -->
         <div class="col-md-6">
-            <div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; transition: transform 0.3s;">
+            <div class="card h-100 border-0 shadow-sm agri-card" style="border-radius: 15px; background: linear-gradient(145deg, #F1F8E9, #DCEDC8);">
                 <div class="card-body p-4 text-center d-flex flex-column justify-content-between">
                     <div>
-                        <h5 class="card-title mb-3 fw-semibold text-dark">Advisory Requests</h5>
-                        <p class="card-text text-muted">Respond to farmers' advisory requests.</p>
+                        <i class="bi bi-chat-dots text-success" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-3 fw-semibold text-dark">Advisory Requests</h5>
+                        <p class="card-text text-muted">Provide expert advice to farmers' queries.</p>
                     </div>
-                    <a href="{% url 'all_advisory_requests' %}" class="btn btn-primary mt-3 w-75 mx-auto" style="border-radius: 6px;">View Requests</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; transition: transform 0.3s;">
-                <div class="card-body p-4 text-center d-flex flex-column justify-content-between">
-                    <div>
-                        <h5 class="card-title mb-3 fw-semibold text-dark">Pest Sightings</h5>
-                        <p class="card-text text-muted">Monitor recent pest sightings reported by farmers.</p>
-                    </div>
-                    <a href="{% url 'pest_infestations' %}" class="btn btn-primary mt-3 w-75 mx-auto" style="border-radius: 6px;">View Sightings</a>
-                </div>
-            </div>
-        </div>
-        <!-- Second Row -->
-        <div class="col-md-6">
-            <div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; transition: transform 0.3s;">
-                <div class="card-body p-4 text-center d-flex flex-column justify-content-between">
-                    <div>
-                        <h5 class="card-title mb-3 fw-semibold text-dark">Treatment Outcomes</h5>
-                        <p class="card-text text-muted">Review treatment outcomes submitted by farmers.</p>
-                    </div>
-                    <a href="{% url 'treatment_outcomes' %}" class="btn btn-primary mt-3 w-75 mx-auto" style="border-radius: 6px;">View Outcomes</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; transition: transform 0.3s;">
-                <div class="card-body p-4 text-center d-flex flex-column justify-content-between">
-                    <div>
-                        <h5 class="card-title mb-3 fw-semibold text-dark">Pest/Weed Database</h5>
-                        <p class="card-text text-muted">Manage pest and weed records.</p>
-                    </div>
-                    <a href="{% url 'manage_database' %}" class="btn btn-primary mt-3 w-75 mx-auto" style="border-radius: 6px;">Manage Database</a>
+                    <a href="{% url 'all_advisory_requests' %}" class="btn btn-success mt-3 w-75 mx-auto agri-btn">View Requests</a>
                 </div>
             </div>
         </div>
 
-        
+        <!-- Pest Sightings -->
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm agri-card" style="border-radius: 15px; background: linear-gradient(145deg, #F1F8E9, #DCEDC8);">
+                <div class="card-body p-4 text-center d-flex flex-column justify-content-between">
+                    <div>
+                        <i class="bi bi-bug text-danger" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-3 fw-semibold text-dark">Pest Sightings</h5>
+                        <p class="card-text text-muted">Track pest reports from the fields.</p>
+                    </div>
+                    <a href="{% url 'pest_infestations' %}" class="btn btn-success mt-3 w-75 mx-auto agri-btn">View Sightings</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Treatment Outcomes -->
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm agri-card" style="border-radius: 15px; background: linear-gradient(145deg, #F1F8E9, #DCEDC8);">
+                <div class="card-body p-4 text-center d-flex flex-column justify-content-between">
+                    <div>
+                        <i class="bi bi-clipboard-check text-primary" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-3 fw-semibold text-dark">Treatment Outcomes</h5>
+                        <p class="card-text text-muted">Analyze farmers’ treatment results.</p>
+                    </div>
+                    <a href="{% url 'treatment_outcomes' %}" class="btn btn-success mt-3 w-75 mx-auto agri-btn">View Outcomes</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pest/Weed Database -->
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm agri-card" style="border-radius: 15px; background: linear-gradient(145deg, #F1F8E9, #DCEDC8);">
+                <div class="card-body p-4 text-center d-flex flex-column justify-content-between">
+                    <div>
+                        <i class="bi bi-database text-warning" style="font-size: 2rem;"></i>
+                        <h5 class="card-title mt-3 fw-semibold text-dark">Pest/Weed Database</h5>
+                        <p class="card-text text-muted">Update pest and weed records.</p>
+                    </div>
+                    <a href="{% url 'manage_database' %}" class="btn btn-success mt-3 w-75 mx-auto agri-btn">Manage Database</a>
+                </div>
+            </div>
+        </div>
     </div>
+
     <!-- Profile Card (Full Width Below) -->
     <div class="row g-4 mt-4">
         <div class="col-12">
-            <div class="card border-0 shadow-lg" style="border-radius: 12px; transition: transform 0.3s;">
-                <div class="card-header bg-primary text-white text-uppercase text-center" style="border-top-left-radius: 12px; border-top-right-radius: 12px;">
-                    <h6 class="mb-0 fw-bold">Profile</h6>
+            <div class="card border-0 shadow-lg agri-card" style="border-radius: 15px; background: linear-gradient(145deg, #FFF8E1, #FFECB3);">
+                <div class="card-header bg-success text-white text-uppercase text-center fw-bold" style="border-top-left-radius: 15px; border-top-right-radius: 15px;">
+                    <i class="bi bi-people-fill me-2"></i>View Users
                 </div>
                 <div class="card-body p-4 text-center d-flex flex-column justify-content-between">
-                    <p class="text-muted mb-4">Manage your user profile and settings.</p>
-                    <a href="{% url 'user_list' %}" class="btn btn-primary w-50 mx-auto" style="border-radius: 6px;">View Profile</a>
+                    <p class="text-muted mb-4">Explore the list of registered users in the system..</p>
+                    <a href="{% url 'user_list' %}" class="btn btn-warning w-50 mx-auto agri-btn">View Users</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Custom Styles -->
 <style>
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    .agri-card {
+        transition: transform 0.3s, box-shadow 0.3s;
     }
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-        transition: background-color 0.3s;
+    .agri-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
     }
-    .btn-primary:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
+    .agri-btn {
+        border-radius: 8px;
+        font-weight: 500;
+        padding: 10px;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+    .btn-success {
+        background-color: #388E3C;
+        border-color: #388E3C;
+    }
+    .btn-success:hover {
+        background-color: #2E7D32;
+        border-color: #2E7D32;
+        transform: scale(1.05);
+    }
+    .btn-warning {
+        background-color: #FFB300;
+        border-color: #FFB300;
+        color: #fff;
+    }
+    .btn-warning:hover {
+        background-color: #FFA000;
+        border-color: #FFA000;
+        transform: scale(1.05);
     }
 </style>
+
+<!-- Bootstrap Icons (Add this to your base.html if not already included) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 {% endblock %}

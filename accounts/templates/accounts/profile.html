@@ -54,6 +54,7 @@
                     </div>
                     <div class="text-center mt-3">
                         <button type="submit" class="btn btn-success">Save Changes</button>
+                        <a href="{% url 'change_password' %}" class="btn btn-warning">Change Password</a>
                         {% if user.role == "farmer" %}
                             <a href="{% url 'farmer_dashboard' %}" class="btn btn-secondary">Cancel</a>
                         {% elif user.role == "agricultural_expert" %}

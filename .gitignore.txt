@@ -2,13 +2,10 @@
 *.sqlite3
 *.db
 
-# Ignore Django/Flask migrations
-migrations/
-*/migrations/
-migrations/**
+
 
 # Ignore Python cache files
-__pycache__/
+_pycache_/
 *.pyc
 *.pyo
 *.pyd
