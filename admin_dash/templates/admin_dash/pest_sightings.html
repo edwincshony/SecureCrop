@@ -1,16 +1,19 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block title %}Pest Sightings{% endblock %}
 
 {% block content %}
     <h1 class="mb-4">Pest Sightings</h1>
 
-    
+    <!-- Search Input -->
+    <input type="text" id="table-search" class="form-control mb-3" placeholder="Search...">
 
     <!-- Pest Sightings Table -->
     <div class="card dashboard-card">
         <div class="card-body">
-            <table class="table table-bordered table-hover">
+            <table class="table table-bordered table-hover searchable-table">
                 <thead style="background-color: #000; color: #fff;">
                     <tr>
                         <th>Sl. No</th>
@@ -26,7 +29,7 @@
                         <tr>
                             <td>{{ forloop.counter }}</td>
                             <td>{{ sighting.user.username }}</td>
-                            <td>{{ sighting.pest.name }}</td>
+                            <td>{{ sighting.pest_name }}</td>
                             <td>{{ sighting.location }}</td>
                             <td>{{ sighting.date }}</td>
                             <td>
@@ -65,17 +68,6 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-    document.querySelectorAll('.confirm-delete').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const url = this.getAttribute('href');
-            const item = this.getAttribute('data-item');
-            document.getElementById('deleteItem').textContent = item;
-            document.getElementById('confirmDeleteBtn').setAttribute('href', url);
-            const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
-            modal.show();
-        });
-    });
-</script>
+<script src="{% static 'js/search.js' %}"></script>
+
 {% endblock %}

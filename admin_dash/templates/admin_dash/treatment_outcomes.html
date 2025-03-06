@@ -1,15 +1,19 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block title %}Treatment Outcomes{% endblock %}
 
 {% block content %}
     <h1 class="mb-4">Treatment Outcomes</h1>
 
-    
+    <!-- Search Bar -->
+    <input type="text" id="table-search" class="form-control mb-3" placeholder="Search...">
+
     <!-- Treatment Outcomes Table -->
     <div class="card dashboard-card">
         <div class="card-body">
-            <table class="table table-bordered table-hover">
+            <table class="table table-bordered table-hover searchable-table">
                 <thead style="background-color: #000; color: #fff;">
                     <tr>
                         <th>Sl. No</th>
@@ -66,17 +70,6 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-    document.querySelectorAll('.confirm-delete').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const url = this.getAttribute('href');
-            const item = this.getAttribute('data-item');
-            document.getElementById('deleteItem').textContent = item;
-            document.getElementById('confirmDeleteBtn').setAttribute('href', url);
-            const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
-            modal.show();
-        });
-    });
-</script>
+<script src="{% static 'js/search.js' %}"></script>
+
 {% endblock %}

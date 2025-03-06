@@ -3,15 +3,15 @@
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <h1 class="mb-4 text-center">Admin Dashboard</h1>
-    <div class="row">
+<div class="container py-4">
+    <h1 class="mb-4 text-center fw-bold">Admin Dashboard</h1>
+    <div class="row g-4">
         <!-- User Management -->
         <div class="col-md-4">
-            <div class="card shadow-sm border-0">
+            <div class="card shadow border-0 h-100">
                 <div class="card-body text-center">
                     <i class="fas fa-users-cog fa-3x mb-3 text-primary"></i>
-                    <h5 class="card-title">User Management</h5>
+                    <h5 class="card-title fw-semibold">User Management</h5>
                     <p class="card-text">Approve, reject, and manage user accounts.</p>
                     <a href="{% url 'admin_user_management' %}" class="btn btn-primary">Manage Users</a>
                 </div>
@@ -20,10 +20,10 @@
         
         <!-- Advisory Requests -->
         <div class="col-md-4">
-            <div class="card shadow-sm border-0">
+            <div class="card shadow border-0 h-100">
                 <div class="card-body text-center">
                     <i class="fas fa-envelope-open-text fa-3x mb-3 text-warning"></i>
-                    <h5 class="card-title">Advisory Requests</h5>
+                    <h5 class="card-title fw-semibold">Advisory Requests</h5>
                     <p class="card-text">View and respond to crop advisory requests.</p>
                     <a href="{% url 'admin_advisory_requests' %}" class="btn btn-warning">View Requests</a>
                 </div>
@@ -32,10 +32,10 @@
         
         <!-- Pest Sightings -->
         <div class="col-md-4">
-            <div class="card shadow-sm border-0">
+            <div class="card shadow border-0 h-100">
                 <div class="card-body text-center">
                     <i class="fas fa-bug fa-3x mb-3 text-danger"></i>
-                    <h5 class="card-title">Pest Sightings</h5>
+                    <h5 class="card-title fw-semibold">Pest Sightings</h5>
                     <p class="card-text">Review and manage reported pest sightings.</p>
                     <a href="{% url 'admin_pest_sightings' %}" class="btn btn-danger">View Sightings</a>
                 </div>
@@ -43,11 +43,11 @@
         </div>
         
         <!-- Treatment Outcomes -->
-        <div class="col-md-4 mt-4">
-            <div class="card shadow-sm border-0">
+        <div class="col-md-4">
+            <div class="card shadow border-0 h-100">
                 <div class="card-body text-center">
                     <i class="fas fa-vial fa-3x mb-3 text-success"></i>
-                    <h5 class="card-title">Treatment Outcomes</h5>
+                    <h5 class="card-title fw-semibold">Treatment Outcomes</h5>
                     <p class="card-text">Monitor effectiveness of pest control treatments.</p>
                     <a href="{% url 'admin_treatment_outcomes' %}" class="btn btn-success">View Treatments</a>
                 </div>
@@ -55,17 +55,32 @@
         </div>
 
         <!-- Database Management -->
-        <div class="col-md-4 mt-4">
-            <div class="card shadow-sm border-0">
-                <div class="card-body text-center">
-                    <i class="fas fa-database fa-3x mb-3 text-info"></i>
-                    <h5 class="card-title">Pest & Weed Database</h5>
-                    <p class="card-text">Manage pest and weed records in the system.</p>
-                    <a href="{% url 'pest_list' %}" class="btn btn-info">View Pests</a>
-                    <a href="{% url 'weed_list' %}" class="btn btn-info">View Weeds</a>
+<!-- Database Management -->
+<div class="col-md-4">
+    <div class="card shadow border-0 h-100">
+        <div class="card-body text-center">
+            <i class="fas fa-database fa-3x mb-3 text-info"></i>
+            <h5 class="card-title fw-semibold">Pest & Weed Database</h5>
+            <p class="card-text">Manage pest and weed records in the system.</p>
+            
+            <!-- Buttons Layout -->
+            <div class="row g-2">
+                <!-- Top Row: Two Buttons -->
+                <div class="col-6">
+                    <a href="{% url 'pest_list' %}" class="btn btn-info w-100">View Pests</a>
+                </div>
+                <div class="col-6">
+                    <a href="{% url 'weed_list' %}" class="btn btn-info w-100">View Weeds</a>
+                </div>
+                
+                <!-- Bottom Row: One Button -->
+                <div class="col-12 mt-2">
+                    <a href="{% url 'crop_list' %}" class="btn btn-info w-100">View Crops</a>
                 </div>
             </div>
         </div>
+    </div>
+</div>
     </div>
 </div>
 {% endblock %}

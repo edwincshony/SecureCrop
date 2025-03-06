@@ -10,23 +10,27 @@ from django.contrib import messages
 
 @login_required
 def conversation_list(request):
-    # Fetch all users except the current user
-    users = CustomUser.objects.exclude(id=request.user.id).order_by('username')
-    
-    # Filter users based on role selection
+    # Fetch only admin-approved users and exclude the current user
+    approved_users = CustomUser.objects.filter(
+        userapproval__status='approved'  # Ensure user is approved
+    ).exclude(id=request.user.id).order_by('username')  # Exclude logged-in user
+
+    # Optional: Filter users by role if needed
     selected_role = request.GET.get('role', 'all')
     if selected_role != 'all':
-        users = users.filter(role=selected_role)
+        approved_users = approved_users.filter(role=selected_role)
 
     # Fetch all conversations the user is part of
     conversations = Conversation.objects.filter(participants=request.user)
 
     context = {
         'conversations': conversations,
-        'users': users,
+        'users': approved_users,  # Pass only approved users
         'selected_role': selected_role,
     }
     return render(request, "messaging/conversation_list.html", context)
+
+
 
 @login_required
 def start_conversation(request, user_id):
