@@ -36,7 +36,15 @@
                             <td>{{ treatment.date_applied }}</td>
                             <td>
                                 <a href="{% url 'public_profile' treatment.user.username %}" class="btn btn-info btn-sm">👁️ View Farmer</a>
-                                <a href="{% url 'admin_treatment_delete' treatment.pk %}" class="btn btn-danger btn-sm confirm-delete" data-item="{{ treatment.user.username }}'s outcome">🗑️ Delete</a>
+                                
+                                <!-- Delete Button (Triggers Modal) -->
+                                <a href="#" class="btn btn-danger btn-sm confirm-delete" 
+                                   data-bs-toggle="modal" 
+                                   data-bs-target="#confirmDeleteModal" 
+                                   data-url="{% url 'admin_treatment_delete' treatment.pk %}" 
+                                   data-item="{{ treatment.user.username }}'s outcome">
+                                    🗑️ Delete
+                                </a>
                             </td>
                         </tr>
                     {% empty %}
@@ -49,7 +57,7 @@
         </div>
     </div>
 
-    <!-- Confirmation Modal for Delete -->
+    <!-- Delete Confirmation Modal -->
     <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -72,4 +80,22 @@
 {% block extra_js %}
 <script src="{% static 'js/search.js' %}"></script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const confirmDeleteModal = document.getElementById("confirmDeleteModal");
+        const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+        const deleteItem = document.getElementById("deleteItem");
+
+        // Attach event listener to all delete buttons
+        document.querySelectorAll(".confirm-delete").forEach(button => {
+            button.addEventListener("click", function () {
+                const itemName = this.getAttribute("data-item");
+                const deleteUrl = this.getAttribute("data-url");
+
+                deleteItem.textContent = itemName; // Update modal text
+                confirmDeleteBtn.href = deleteUrl; // Update delete link
+            });
+        });
+    });
+</script>
 {% endblock %}

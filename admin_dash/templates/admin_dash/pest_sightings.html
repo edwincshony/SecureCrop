@@ -34,7 +34,14 @@
                             <td>{{ sighting.date }}</td>
                             <td>
                                 <a href="{% url 'public_profile' sighting.user.username %}" class="btn btn-info btn-sm">👁️ View Farmer</a>
-                                <a href="{% url 'admin_sighting_delete' sighting.pk %}" class="btn btn-danger btn-sm confirm-delete" data-item="{{ sighting.user.username }}'s sighting">🗑️ Delete</a>
+                                <button 
+                                    class="btn btn-danger btn-sm confirm-delete" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#confirmDeleteModal"
+                                    data-item="{{ sighting.user.username }}'s sighting"
+                                    data-url="{% url 'admin_sighting_delete' sighting.pk %}">
+                                    🗑️ Delete
+                                </button>
                             </td>
                         </tr>
                     {% empty %}
@@ -69,5 +76,24 @@
 
 {% block extra_js %}
 <script src="{% static 'js/search.js' %}"></script>
+<script>
+    // JavaScript to handle the modal functionality
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteButtons = document.querySelectorAll('.confirm-delete');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const deleteItemText = document.getElementById('deleteItem');
 
+        let deleteUrl = '';
+
+        // Add event listeners to all delete buttons
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const item = this.getAttribute('data-item');
+                deleteUrl = this.getAttribute('data-url');
+                deleteItemText.textContent = item;
+                confirmDeleteBtn.setAttribute('href', deleteUrl);
+            });
+        });
+    });
+</script>
 {% endblock %}

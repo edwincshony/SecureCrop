@@ -90,11 +90,7 @@
                         </li>
                         {% if user.is_authenticated %}
                             {% if user.is_superuser %}
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'messaging:conversation_list' %}">
-                                        <i class="bi bi-person me-2"></i>Inbox
-                                    </a>
-                                </li>
+                                
                                 <li class="nav-item">
                                     <a class="nav-link" href="{% url 'discussions:category_list' %}">
                                         <i class="bi bi-person me-2"></i>Discussion
