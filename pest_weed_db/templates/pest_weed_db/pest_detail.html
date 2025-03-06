@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}{{ pest.name }} - Pest Details{% endblock %}
@@ -40,14 +41,15 @@
                                     <a href="{% url 'pest_list' %}" class="btn btn-secondary">
                                         Back to List
                                     </a>
-                                    {% if user.role == "agricultural_expert" %}
-                                        <a href="{% url 'pest_edit' pest.pk %}" class="btn btn-primary">
-                                            Edit Pest
-                                        </a>
-                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                            Delete Pest
-                                        </button>
-                                    {% endif %}
+                                    {% if user.is_superuser or user.role == "agricultural_expert" %}
+    <a href="{% url 'pest_edit' pest.pk %}" class="btn btn-primary">
+        Edit Pest
+    </a>
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+        Delete Pest
+    </button>
+{% endif %}
+
                                 </div>
                             </div>
                         </div>
