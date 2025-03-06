@@ -127,39 +127,20 @@ def respond_advisory(request, pk):
     advisory_request = get_object_or_404(AdvisoryRequest, pk=pk)
 
     if request.method == 'POST':
-        print("🚀 Received POST request!")  # DEBUG
         form = RecommendationForm(request.POST, instance=advisory_request)
-
         if form.is_valid():
-            print("✅ Form is valid!")  # DEBUG
             advisory_request = form.save(commit=False)
-
             if advisory_request.status == 'pending':
                 advisory_request.status = 'responded'
             advisory_request.responded_by = request.user
             advisory_request.save()
-            print("📌 Advisory Request updated:", advisory_request)  # DEBUG
-
-            # 🔥 CHECK IF AdvisoryResponse IS CREATED 🔥
-            response = AdvisoryResponse.objects.create(
+            AdvisoryResponse.objects.create(
                 advisory_request=advisory_request,
                 expert=request.user,
-                response_text=advisory_request.recommendation  # Make sure this is correct!
-            )
-            print("🎉 AdvisoryResponse created:", response)  # DEBUG
-
-            # Notify the farmer
-            Notification.objects.create(
-                user=advisory_request.user,
-                title=f"Update for {advisory_request.crop_type}",
-                message=f"An expert has responded to your {advisory_request.issue_type} issue.",
-                url=f"/farmer/advisory-responses/"
+                response_text=advisory_request.recommendation
             )
             messages.success(request, "Recommendation sent to the farmer.")
             return redirect('expert_dashboard')
-        else:
-            print("❌ Form errors:", form.errors)  # DEBUG
-
     else:
         form = RecommendationForm(instance=advisory_request)
 

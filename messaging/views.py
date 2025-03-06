@@ -103,8 +103,3 @@ def send_message(request, conversation_id):
             messages.error(request, "Message sending failed.")
     
     return redirect("messaging:conversation_detail", conversation_id=conversation.id)
-
-
-
-
-

@@ -20,13 +20,13 @@
     {% if notifications %}
         <div class="list-group">
             {% for notification in notifications %}
-                <a href="{{ notification.url }}" class="list-group-item list-group-item-action {% if not notification.is_read %}fw-bold{% endif %}">
+                <div class="list-group-item {% if not notification.is_read %}fw-bold{% endif %}">
                     <div class="d-flex justify-content-between">
                         <strong>{{ notification.title }}</strong>
                         <small class="text-muted">{{ notification.created_at|date:"M d, Y H:i" }}</small>
                     </div>
                     <p class="mb-0 text-muted">{{ notification.message }}</p>
-                </a>
+                </div>
             {% endfor %}
         </div>
     {% else %}

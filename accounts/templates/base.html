@@ -120,6 +120,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="{% url 'notification_list' %}">
                                         <i class="bi bi-bell me-2"></i>Notifications
+                                        {% if unread_notifications_count > 0 %}
+                                            <span class="badge bg-danger rounded-pill">{{ unread_notifications_count }}</span>
+                                        {% endif %}
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -148,6 +151,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="{% url 'notification_list' %}">
                                         <i class="bi bi-bell me-2"></i>Notifications
+                                        {% if unread_notifications_count > 0 %}
+                                            <span class="badge bg-danger rounded-pill">{{ unread_notifications_count }}</span>
+                                        {% endif %}
                                     </a>
                                 </li>
                                 <li class="nav-item">

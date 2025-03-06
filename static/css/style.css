@@ -1,0 +1,33 @@
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.sent {
+    align-self: flex-end;
+    background-color: #dcf8c6;
+    padding: 8px;
+    border-radius: 10px;
+    margin: 5px;
+}
+
+.received {
+    align-self: flex-start;
+    background-color: #fff;
+    padding: 8px;
+    border-radius: 10px;
+    margin: 5px;
+}
+
+/* Message styling */
+.message-item {
+    display: flex;
+    margin-bottom: 10px;
+    justify-content: flex-start; /* Default to left for botanist */
+}
+
+/* When the user sends a message, align it to the right */
+.message-right {
+    justify-content: flex-end;
+}
