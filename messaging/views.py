@@ -70,10 +70,11 @@ def conversation_detail(request, conversation_id):
     conversation.messages.filter(~Q(sender=request.user), is_read=False).update(is_read=True)
 
     context = {
-        "conversation": conversation,
-        "messages": messages_list,
-        "form": form,
-    }
+    "conversation": conversation,
+    "chat_messages": messages_list,  # ✅ Renamed to avoid conflict
+    "form": form,
+   }
+
     return render(request, "messaging/conversation_detail.html", context)
 
 

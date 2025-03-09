@@ -5,8 +5,8 @@
     <div class="card mb-4">
         <div class="card-body">
             <ul class="list-unstyled">
-                {% for message in messages %}
-                    <li class="message-item {% if message.sender == user %}message-right{% else %}message-left{% endif %}">
+                {% for message in chat_messages %}
+                <li class="message-item {% if message.sender == user %}message-right{% else %}message-left{% endif %}">
                         <div class="message-bubble">
                             <strong>{{ message.sender.username }}:</strong> 
                             <span class="text-muted">{{ message.text }}</span><br>
