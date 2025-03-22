@@ -10,190 +10,428 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Custom CSS (optional) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
+        :root {
+            --primary-color: #2c8a23;
+            --primary-dark: #1f6e18;
+            --primary-light: #4ca843;
+            --accent-color: #f7b733;
+            --accent-dark: #e6a012;
+            --text-light: #f9f9f9;
+            --text-dark: #333333;
+            --bg-light: #f8fbf7;
+            --bg-medium: #eaf3e8;
+            --bg-dark: #dae8d7;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
         body {
-            background-color: #f4f7f6;
-            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            font-family: 'Open Sans', sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            color: var(--text-dark);
         }
+        
+        h1, h2, h3, h4, h5, h6, .brand-text {
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        /* Header & Navigation */
         .navbar-agro {
-            background-color: #2a7221;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            padding: 12px 0;
         }
+        
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
         .brand-text {
-            font-weight: 600;
+            font-weight: 700;
             color: white;
+            font-size: 1.4rem;
+            margin: 0;
+            letter-spacing: 0.5px;
         }
+        
         .nav-link {
             color: rgba(255, 255, 255, 0.9) !important;
-            transition: color 0.2s ease-in-out;
+            transition: all 0.2s ease-in-out;
+            font-weight: 500;
+            padding: 8px 16px !important;
+            border-radius: 6px;
+            margin: 0 2px;
         }
+        
         .nav-link:hover {
             color: #fff !important;
+            background-color: var(--primary-dark);
         }
-        .footer {
-            background-color: #2a7221;
-            color: rgba(255, 255, 255, 0.8);
-            padding: 15px 0;
-            margin-top: auto; /* Push footer to bottom */
+        
+        .nav-link.active {
+            background-color: var(--primary-dark);
+            color: white !important;
         }
-        .footer a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            transition: color 0.2s ease-in-out;
+        
+        .nav-link .bi {
+            margin-right: 6px;
+            font-size: 1.1rem;
+            vertical-align: -2px;
         }
-        .footer a:hover {
-            color: #fff;
+        
+        /* User dropdown */
+        .user-dropdown {
+            display: flex;
+            align-items: center;
+            background-color: var(--primary-dark);
+            border-radius: var(--border-radius);
+            padding: 6px 12px;
+            color: white !important;
         }
+        
+        .user-dropdown:hover {
+            background-color: rgba(0,0,0,0.2);
+        }
+        
+        .dropdown-menu {
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: none;
+            padding: 8px;
+            margin-top: 10px;
+        }
+        
+        .dropdown-item {
+            border-radius: 4px;
+            padding: 8px 12px;
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--bg-medium);
+        }
+        
+        .dropdown-item .bi {
+            margin-right: 8px;
+            color: var(--primary-color);
+        }
+        
+        /* Profile photo */
         .profile-photo {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             object-fit: cover;
             border-radius: 50%;
             border: 2px solid white;
+            margin-right: 8px;
         }
-        .alert-custom {
-            border-radius: 0;
-            margin-bottom: 1rem;
+        
+        /* Notification badge */
+        .notification-badge {
+            position: relative;
         }
-        /* Ensure content doesn’t overlap footer */
+        
+        .badge-pill {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background-color: var(--accent-color);
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.7rem;
+        }
+        
+        /* Main Content Area */
         .container-main {
             flex-grow: 1;
-            padding-top: 20px;
+            padding: 30px 0;
+        }
+        
+        /* Content Cards */
+        .content-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            padding: 12px 16px;
+            border-bottom: none;
+        }
+        
+        /* Alerts */
+        .alert-custom {
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        
+        .alert-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #2e7d32;
+        }
+        
+        .alert-warning {
+            background-color: #fff8e1;
+            color: #f57f17;
+            border-left: 4px solid #f57f17;
+        }
+        
+        .alert-danger {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+        }
+        
+        .alert-info {
+            background-color: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #1565c0;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-secondary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: var(--text-dark);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--accent-dark);
+            border-color: var(--accent-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: var(--primary-dark);
+            color: rgba(255, 255, 255, 0.9);
+            padding: 20px 0;
+            margin-top: auto;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .footer a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: color 0.2s ease-in-out;
+            margin: 0 10px;
+        }
+        
+        .footer a:hover {
+            color: var(--accent-color);
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .navbar-collapse {
+                background-color: var(--primary-dark);
+                border-radius: var(--border-radius);
+                padding: 10px;
+                margin-top: 10px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .footer-links {
+                justify-content: center;
+            }
         }
     </style>
 </head>
-<body class="d-flex flex-column min-vh-100 bg-light">
+<body>
     <!-- Header -->
     <header class="sticky-top">
         <nav class="navbar navbar-expand-lg navbar-dark navbar-agro">
             <div class="container">
-                <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
-                    <i class="bi bi-tree fs-3"></i>
-                    <span class="brand-text">Crop Guardian</span>
+                <!-- Logo and Brand Name -->
+                <a class="navbar-brand" href="{% url 'home' %}">
+                    <div class="brand-logo">
+                        <i class="bi bi-shield-fill-check fs-3 text-white"></i>
+                        <h1 class="brand-text">Crop Guardian</h1>
+                    </div>
                 </a>
+                
+                <!-- Mobile Toggle Button -->
                 <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="bi bi-list fs-1 text-white"></i>
                 </button>
+                
+                <!-- Navigation Links -->
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto align-items-center gap-3">
+                    <ul class="navbar-nav ms-auto align-items-center">
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'home' %}">
-                                <i class="bi bi-house me-2"></i>Home
+                            <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'home' %}">
+                                <i class="bi bi-house"></i>Home
                             </a>
                         </li>
+                        
                         {% if user.is_authenticated %}
                             {% if user.is_superuser %}
-                                
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'discussions:category_list' %}">
-                                        <i class="bi bi-person me-2"></i>Discussion
+                                    <a class="nav-link {% if 'discussions' in request.path %}active{% endif %}" href="{% url 'discussions:category_list' %}">
+                                        <i class="bi bi-chat-dots"></i>Discussions
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'admin_dashboard' %}">
-                                        <i class="bi bi-gear me-2"></i>Admin Dashboard
+                                    <a class="nav-link {% if 'admin_dashboard' in request.path %}active{% endif %}" href="{% url 'admin_dashboard' %}">
+                                        <i class="bi bi-gear"></i>Admin
                                     </a>
                                 </li>
                             {% endif %}
+                            
                             {% if user.role == "farmer" %}
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'messaging:conversation_list' %}">
-                                        <i class="bi bi-person me-2"></i>Inbox
+                                    <a class="nav-link {% if 'messaging' in request.path %}active{% endif %}" href="{% url 'messaging:conversation_list' %}">
+                                        <i class="bi bi-envelope"></i>Messages
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'discussions:category_list' %}">
-                                        <i class="bi bi-person me-2"></i>Discussion
+                                    <a class="nav-link {% if 'discussions' in request.path %}active{% endif %}" href="{% url 'discussions:category_list' %}">
+                                        <i class="bi bi-chat-dots"></i>Discussions
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'notification_list' %}">
-                                        <i class="bi bi-bell me-2"></i>Notifications
+                                    <a class="nav-link notification-badge {% if 'notification_list' in request.path %}active{% endif %}" href="{% url 'notification_list' %}">
+                                        <i class="bi bi-bell"></i>Notifications
                                         {% if unread_notifications_count > 0 %}
-                                            <span class="badge bg-danger rounded-pill">{{ unread_notifications_count }}</span>
+                                            <span class="badge rounded-pill badge-pill">{{ unread_notifications_count }}</span>
                                         {% endif %}
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'dashboard_overview' %}">
-                                        <i class="bi bi-graph-up"></i>Farm Stats
+                                    <a class="nav-link {% if 'dashboard_overview' in request.path %}active{% endif %}" href="{% url 'dashboard_overview' %}">
+                                        <i class="bi bi-graph-up"></i>Stats
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'farmer_dashboard' %}">
-                                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                                    <a class="nav-link {% if 'farmer_dashboard' in request.path %}active{% endif %}" href="{% url 'farmer_dashboard' %}">
+                                        <i class="bi bi-speedometer2"></i>Dashboard
                                     </a>
                                 </li>
-                               
                             {% elif user.role == "agricultural_expert" %}
-                               
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'messaging:conversation_list' %}">
-                                        <i class="bi bi-person me-2"></i>Inbox
+                                    <a class="nav-link {% if 'messaging' in request.path %}active{% endif %}" href="{% url 'messaging:conversation_list' %}">
+                                        <i class="bi bi-envelope"></i>Messages
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'discussions:category_list' %}">
-                                        <i class="bi bi-person me-2"></i>Discussion
+                                    <a class="nav-link {% if 'discussions' in request.path %}active{% endif %}" href="{% url 'discussions:category_list' %}">
+                                        <i class="bi bi-chat-dots"></i>Discussions
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'notification_list' %}">
-                                        <i class="bi bi-bell me-2"></i>Notifications
+                                    <a class="nav-link notification-badge {% if 'notification_list' in request.path %}active{% endif %}" href="{% url 'notification_list' %}">
+                                        <i class="bi bi-bell"></i>Notifications
                                         {% if unread_notifications_count > 0 %}
-                                            <span class="badge bg-danger rounded-pill">{{ unread_notifications_count }}</span>
+                                            <span class="badge rounded-pill badge-pill">{{ unread_notifications_count }}</span>
                                         {% endif %}
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'dashboard_overview' %}">
-                                        <i class="bi bi-graph-up"></i>Farm Stats
+                                    <a class="nav-link {% if 'dashboard_overview' in request.path %}active{% endif %}" href="{% url 'dashboard_overview' %}">
+                                        <i class="bi bi-graph-up"></i>Stats
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'expert_dashboard' %}">
-                                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                                    <a class="nav-link {% if 'expert_dashboard' in request.path %}active{% endif %}" href="{% url 'expert_dashboard' %}">
+                                        <i class="bi bi-speedometer2"></i>Dashboard
                                     </a>
                                 </li>
                             {% endif %}
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            
+                            <!-- User Profile Dropdown -->
+                            <li class="nav-item dropdown ms-2">
+                                <a class="nav-link user-dropdown" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     {% if user.role == "farmer" and user.farmer_profile.profile_picture %}
-                                        <img src="{{ user.farmer_profile.profile_picture.url }}" alt="{{ user.username }}'s profile" class="profile-photo me-2">
+                                        <img src="{{ user.farmer_profile.profile_picture.url }}" alt="{{ user.username }}'s profile" class="profile-photo">
                                     {% elif user.role == "agricultural_expert" and user.expert_profile.profile_picture %}
-                                        <img src="{{ user.expert_profile.profile_picture.url }}" alt="{{ user.username }}'s profile" class="profile-photo me-2">
-                                    {% else %}
-                                        <i class="bi bi-person-circle me-2"></i>
+                                        <img src="{{ user.expert_profile.profile_picture.url }}" alt="{{ user.username }}'s profile" class="profile-photo">
+                                   
                                     {% endif %}
-                                    {{ user.username }}
+                                    <span>{{ user.username }}</span>
+                                    <i class="bi bi-chevron-down ms-2 small"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                    <!-- Conditional content for farmers and agricultural experts -->
                                     {% if user.role == "farmer" or user.role == "agricultural_expert" %}
-                                        <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'profile' %}">
+                                                <i class="bi bi-person"></i>My Profile
+                                            </a>
+                                        </li>
+                                      
                                         <li><hr class="dropdown-divider"></li>
                                     {% endif %}
-                                
-                                    <!-- Logout button available for all users -->
-                                    <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Logout</a></li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+                                            <i class="bi bi-box-arrow-right"></i>Logout
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                         {% else %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'login' %}">
-                                    <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                                <a class="nav-link {% if 'login' in request.path %}active{% endif %}" href="{% url 'login' %}">
+                                    <i class="bi bi-box-arrow-in-right"></i>Login
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'signup' %}">
-                                    <i class="bi bi-person-plus me-2"></i>Sign Up
+                                <a class="nav-link btn btn-secondary ms-2 text-dark" href="{% url 'signup' %}">
+                                    <i class="bi bi-person-plus"></i>Sign Up
                                 </a>
                             </li>
                         {% endif %}
@@ -203,20 +441,20 @@
         </nav>
     </header>
 
-    <!-- Messages -->
+    <!-- Alert Messages -->
     {% if messages %}
-        <div class="container container-main">
+        <div class="container mt-4">
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show alert-custom" role="alert">
                     <div class="d-flex align-items-center">
                         {% if message.tags == 'success' %}
-                            <i class="bi bi-check-circle me-2"></i>
+                            <i class="bi bi-check-circle-fill me-2"></i>
                         {% elif message.tags == 'error' %}
-                            <i class="bi bi-exclamation-circle me-2"></i>
+                            <i class="bi bi-exclamation-circle-fill me-2"></i>
                         {% elif message.tags == 'warning' %}
-                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
                         {% else %}
-                            <i class="bi bi-info-circle me-2"></i>
+                            <i class="bi bi-info-circle-fill me-2"></i>
                         {% endif %}
                         {{ message }}
                     </div>
@@ -227,19 +465,54 @@
     {% endif %}
 
     <!-- Main Content -->
-    <main class="container container-main py-4">
+    <main class="container container-main">
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="footer mt-auto">
-        <div class="container text-center">
-            <p>© {% now "Y" %} Crop Guardian. All rights reserved. | <a href="{% url 'home' %}">Contact Us</a> | <a href="{% url 'home' %}#about">About</a></p>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-copyright">
+                    <i class="bi bi-shield-fill-check me-2"></i>
+                    © {% now "Y" %} Crop Guardian. All rights reserved.
+                </div>
+                <div class="footer-links">
+                    <a href="{% url 'about' %}"><i class="bi bi-info-circle me-1"></i>About Us</a>
+                    <a href="{% url 'contact' %}"><i class="bi bi-envelope me-1"></i>Contact</a>
+                    <a href="{% url 'privacy_policy' %}"><i class="bi bi-shield-lock me-1"></i>Privacy Policy</a>
+                    <a href="{% url 'terms_of_service' %}"><i class="bi bi-file-text me-1"></i>Terms of Service</a>
+                </div>
+            </div>
         </div>
     </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        // Add active class to current page in navbar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Highlight current section
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && currentPath.includes(href) && href !== '/') {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Initialize tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+    
     {% block extra_js %}{% endblock %}
 </body>
 </html>

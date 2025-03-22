@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}About Us - Crop Guardian{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <div class="position-relative text-center text-white">
+        <div class="position-absolute top-50 start-50 translate-middle text-shadow">
+            <h1 class="fw-bold">About Crop Guardian</h1>
+            <p>Empowering Farmers with Technology & Community</p>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-6">
+            <img src="{% static 'assets/wilsan-u-BCATbA86WAw-unsplash.jpg' %}" class="img-fluid rounded shadow" alt="Farmers working">
+        </div>
+        <div class="col-lg-6">
+            <h2 class="text-success fw-bold">Who We Are</h2>
+            <p class="text-muted">
+                Crop Guardian is a revolutionary platform connecting farmers with agricultural experts. 
+                We provide AI-powered pest and weed management insights, fostering a community-driven approach 
+                to sustainable farming.
+            </p>
+            <p class="text-muted">
+                Our mission is to enhance productivity through technology, real-time pest tracking, and 
+                a knowledge-sharing community.
+            </p>
+            <a href="{% url 'contact' %}" class="btn btn-success mt-3">Contact Us</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
