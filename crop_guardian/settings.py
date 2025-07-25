@@ -131,6 +131,7 @@ LOGIN_REDIRECT_URL = '/profile/'
 
 
 STATIC_URL = '/static/'  # URL prefix for static files
+STATIC_ROOT = BASE_DIR / 'staticfiles_build'
 
 # Directory where static files are stored during development
 STATICFILES_DIRS = [
@@ -142,6 +143,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # For deployment
 
 # Media files (Uploaded by users)
 MEDIA_URL = '/media/'  # URL prefix for media files
+MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Directory where media files are stored
 
 # Custom user model
